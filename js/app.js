@@ -1118,12 +1118,22 @@
     boss: document.getElementById("bossView")
   };
 
+  // Each tab's DOM is only rebuilt on demand (by its own actions), so a tab
+  // can go stale if another tab changed shared state (e.g. spending a skill
+  // point from Party). Refresh the tab being switched into every time.
+  var tabRefresh = {
+    skills: renderCharContent,
+    party: renderPartyContent,
+    boss: renderBoss
+  };
+
   tabBtns.forEach(function (btn) {
     btn.addEventListener("click", function () {
       tabBtns.forEach(function (b) { b.classList.remove("active"); });
       btn.classList.add("active");
       Object.keys(views).forEach(function (k) { views[k].classList.remove("active"); });
       views[btn.dataset.tab].classList.add("active");
+      tabRefresh[btn.dataset.tab]();
     });
   });
 
