@@ -94,10 +94,9 @@ html, body {
 
 .char-picker {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  overflow-x: auto;
   padding: 4px 2px 10px 2px;
-  -webkit-overflow-scrolling: touch;
 }
 .char-chip {
   flex: 0 0 auto;
