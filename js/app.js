@@ -973,7 +973,7 @@
       var entityState = findEntityState(id);
       var card = document.createElement("div");
       card.className = "card party-card";
-      if (entity.color) card.style.borderLeft = "4px solid " + entity.color;
+      applyCharColor(card, entity.color);
 
       var h3 = document.createElement("h3");
       h3.textContent = entity.name + " (Lv " + entityState.level + ")";
