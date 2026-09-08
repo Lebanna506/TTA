@@ -47,6 +47,19 @@ echo Installing dependencies...
 call npm install
 echo.
 
+netstat -ano | findstr /R /C:"LISTENING" | findstr ":8080 " >nul
+if %errorlevel%==0 (
+    echo Port 8080 is already in use - most likely an earlier run.bat window
+    echo that's still open. That server is still serving your latest files,
+    echo so just reopening your browser instead of starting a new one.
+    echo.
+    echo ^(If that's not it, close whatever else is using port 8080 and
+    echo  re-run this script.^)
+    start http://localhost:8080
+    pause
+    exit /b 0
+)
+
 echo Starting local server at http://localhost:8080 ...
 echo (Your data stays in this browser only - close this window to stop.)
 echo.
