@@ -461,6 +461,14 @@
     return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
   }
 
+  // Tints a card with the character's colour: a strong border and a light
+  // fill, so every box on a character's page reads as unmistakably theirs.
+  function applyCharColor(el, color) {
+    if (!color) return;
+    el.style.border = "2px solid " + color;
+    el.style.background = hexToRgba(color, 0.1);
+  }
+
   function styleChip(btn, entity, active) {
     btn.innerHTML = "";
     if (entity.color) {
@@ -535,6 +543,7 @@
 
     var card = document.createElement("div");
     card.className = "card tree-card";
+    applyCharColor(card, entity.color);
 
     var titleRow = document.createElement("div");
     titleRow.className = "tree-title-row";
@@ -680,6 +689,7 @@
     var lb = entityState.levelBonus;
     var wrap = document.createElement("div");
     wrap.className = "stats-card card";
+    applyCharColor(wrap, entity.color);
     var title = document.createElement("div");
     title.className = "stats-title";
     title.innerHTML = 'Stats <span class="levelup-points">Level-up Points: <strong>' + lb.unspent + '</strong></span>';
@@ -771,6 +781,7 @@
 
     var wrap = document.createElement("div");
     wrap.className = "equip-card card";
+    applyCharColor(wrap, entity.color);
     var title = document.createElement("div");
     title.className = "stats-title";
     title.textContent = "Equipment";
@@ -797,6 +808,7 @@
 
     var wrap = document.createElement("div");
     wrap.className = "equip-card card";
+    applyCharColor(wrap, entity.color);
     var title = document.createElement("div");
     title.className = "stats-title";
     title.textContent = "Elfstones";
@@ -836,9 +848,7 @@
 
     var header = document.createElement("div");
     header.className = "char-header card";
-    if (entity.color) {
-      header.style.borderLeft = "4px solid " + entity.color;
-    }
+    applyCharColor(header, entity.color);
     var h2 = document.createElement("h2");
     h2.textContent = entity.name;
     if (entity.color) h2.style.color = entity.color;
