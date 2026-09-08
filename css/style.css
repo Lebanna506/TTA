@@ -427,13 +427,29 @@ html, body {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 8px;
 }
+.stat-block {
+  background: var(--bg-panel-2);
+  border-radius: 8px;
+  overflow: hidden;
+}
 .stat-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--bg-panel-2);
-  border-radius: 8px;
   padding: 6px 8px;
+}
+.stat-toggle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
 }
 .stat-row .stat-name {
   flex: 1;
@@ -450,6 +466,67 @@ html, body {
   width: 26px;
   height: 26px;
   font-size: 0.9rem;
+}
+.stat-breakdown {
+  border-top: 1px solid var(--border);
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sb-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+.sb-line .sb-value { min-width: 2.5em; text-align: right; }
+.sb-total {
+  border-top: 1px solid var(--border);
+  margin-top: 2px;
+  padding-top: 4px;
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* Equipment */
+.equip-card .stats-title {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.equip-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.equip-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  align-items: center;
+  gap: 4px 10px;
+  background: var(--bg-panel-2);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+.equip-label {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.equip-select {
+  background: var(--bg-panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 0.85rem;
+  width: 100%;
+}
+.equip-summary {
+  grid-column: 2;
+  font-size: 0.75rem;
+  color: var(--accent);
 }
 
 /* Party */

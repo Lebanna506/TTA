@@ -54,6 +54,12 @@ iPad stays on the iPad.
 - Skill names are colour-coded to match the in-game speed tiers: white/grey
   = normal, green = fast, and three shades of red = slow, very slow, and
   extremely slow.
+- Each character has an **Equipment** section with one dropdown per slot
+  they can actually use (not every character has every slot - e.g. only
+  Berethor and Eaoden carry a Shield). Equipping an item adds its bonuses
+  into the Stats tiles above; tap any stat, Armor, or Weapon Damage to see
+  a breakdown of exactly which piece of gear (or the character's own base
+  value) contributed how much.
 
 ## Party tab
 

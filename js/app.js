@@ -94,7 +94,76 @@
     STAT_KEYS.forEach(function (k) {
       stats[k] = entityDef.stats ? entityDef.stats[k] : 0;
     });
-    return { level: level, stats: stats, trees: trees };
+    var equipment = {};
+    getEquipmentSlots(entityDef.id).forEach(function (slot) {
+      equipment[slot.slotId] = null;
+    });
+    return { level: level, stats: stats, trees: trees, equipment: equipment };
+  }
+
+  // ---------- Equipment ----------
+
+  function getEquipmentSlots(charId) {
+    var slots = (TTA_EQUIPMENT.equipment[charId] || []).slice();
+    if (slots.length) {
+      slots.push({ slotId: "elfstone", label: "Elfstone", items: TTA_EQUIPMENT.elfstones });
+    }
+    return slots;
+  }
+
+  function getEquippedItem(entityState, charId, slotId) {
+    var slot = getEquipmentSlots(charId).find(function (s) { return s.slotId === slotId; });
+    if (!slot) return null;
+    var idx = entityState.equipment ? entityState.equipment[slotId] : null;
+    if (idx === null || idx === undefined || !slot.items[idx]) return null;
+    return slot.items[idx];
+  }
+
+  function equipItem(charId, slotId, itemIndex) {
+    var entityState = findEntityState(charId);
+    if (!entityState.equipment) entityState.equipment = {};
+    entityState.equipment[slotId] = itemIndex === null ? null : itemIndex;
+    save();
+  }
+
+  function computeStatBreakdown(charId, entityState, statKey) {
+    var base = entityState.stats[statKey] || 0;
+    var sources = [{ label: "Base", value: base }];
+    var total = base;
+    getEquipmentSlots(charId).forEach(function (slot) {
+      var item = getEquippedItem(entityState, charId, slot.slotId);
+      if (item && item[statKey]) {
+        sources.push({ label: slot.label, value: item[statKey] });
+        total += item[statKey];
+      }
+    });
+    return { total: total, sources: sources };
+  }
+
+  function computeArmorBreakdown(charId, entityState) {
+    var sources = [{ label: "Base", value: 0 }];
+    var total = 0;
+    getEquipmentSlots(charId).forEach(function (slot) {
+      var item = getEquippedItem(entityState, charId, slot.slotId);
+      if (item && item.armor) {
+        sources.push({ label: slot.label, value: item.armor });
+        total += item.armor;
+      }
+    });
+    return { total: total, sources: sources };
+  }
+
+  function computeWeaponDamage(charId, entityState) {
+    var weaponSlot = getEquipmentSlots(charId).find(function (s) { return s.slotId === "weapon"; });
+    if (!weaponSlot) return null;
+    var item = getEquippedItem(entityState, charId, "weapon");
+    if (!item) return { total: 0, sources: [{ label: "No weapon equipped", value: 0 }] };
+    var perLevel = item.damagePerLevel * entityState.level;
+    var sources = [
+      { label: "Weapon Base", value: item.baseDamage },
+      { label: "Per Level (×" + entityState.level + ")", value: perLevel }
+    ];
+    return { total: item.baseDamage + perLevel, sources: sources };
   }
 
   function freshState() {
@@ -150,6 +219,12 @@
       if (savedEntity.stats) {
         STAT_KEYS.forEach(function (k) {
           if (typeof savedEntity.stats[k] === "number") fe.stats[k] = savedEntity.stats[k];
+        });
+      }
+      if (savedEntity.equipment) {
+        getEquipmentSlots(defEntity.id).forEach(function (slot) {
+          var idx = savedEntity.equipment[slot.slotId];
+          if (typeof idx === "number" && slot.items[idx]) fe.equipment[slot.slotId] = idx;
         });
       }
       defEntity.trees.forEach(function (t) {
@@ -430,6 +505,77 @@
     return card;
   }
 
+  // Keeps breakdown panels open across re-renders triggered by other actions.
+  var openBreakdowns = {};
+
+  function buildBreakdownRow(label, opts) {
+    opts = opts || {};
+    var row = document.createElement("div");
+    row.className = "stat-row";
+
+    if (opts.onMinus) {
+      var minus = document.createElement("button");
+      minus.className = "btn btn-secondary btn-round btn-small";
+      minus.textContent = "-";
+      minus.addEventListener("click", opts.onMinus);
+      row.appendChild(minus);
+    }
+
+    var main = document.createElement("button");
+    main.className = "stat-toggle";
+    main.type = "button";
+
+    var nameEl = document.createElement("span");
+    nameEl.className = "stat-name";
+    nameEl.textContent = label;
+
+    var valueEl = document.createElement("span");
+    valueEl.className = "stat-num";
+    valueEl.textContent = opts.total;
+
+    main.appendChild(nameEl);
+    main.appendChild(valueEl);
+    row.appendChild(main);
+
+    if (opts.onPlus) {
+      var plus = document.createElement("button");
+      plus.className = "btn btn-primary btn-round btn-small";
+      plus.textContent = "+";
+      plus.addEventListener("click", opts.onPlus);
+      row.appendChild(plus);
+    }
+
+    var wrap = document.createElement("div");
+    wrap.className = "stat-block";
+    wrap.appendChild(row);
+
+    var open = !!openBreakdowns[opts.key];
+    var panel = document.createElement("div");
+    panel.className = "stat-breakdown";
+    panel.hidden = !open;
+    opts.sources.forEach(function (s) {
+      var line = document.createElement("div");
+      line.className = "sb-line";
+      var sign = s.value > 0 ? "+" : "";
+      line.innerHTML = '<span class="sb-label">' + s.label + '</span><span class="sb-value">' + sign + s.value + '</span>';
+      panel.appendChild(line);
+    });
+    if (opts.sources.length > 1) {
+      var totalLine = document.createElement("div");
+      totalLine.className = "sb-line sb-total";
+      totalLine.innerHTML = '<span class="sb-label">Total</span><span class="sb-value">' + opts.total + '</span>';
+      panel.appendChild(totalLine);
+    }
+    wrap.appendChild(panel);
+
+    main.addEventListener("click", function () {
+      openBreakdowns[opts.key] = !openBreakdowns[opts.key];
+      panel.hidden = !openBreakdowns[opts.key];
+    });
+
+    return wrap;
+  }
+
   function renderStats(entity, entityState) {
     var wrap = document.createElement("div");
     wrap.className = "stats-card card";
@@ -440,42 +586,108 @@
 
     var grid = document.createElement("div");
     grid.className = "stats-grid";
+
     STAT_KEYS.forEach(function (key) {
-      var row = document.createElement("div");
-      row.className = "stat-row";
-
-      var minus = document.createElement("button");
-      minus.className = "btn btn-secondary btn-round btn-small";
-      minus.textContent = "-";
-      minus.addEventListener("click", function () {
-        adjustStat(entity.id, key, -1);
-        renderCharContent();
-      });
-
-      var plus = document.createElement("button");
-      plus.className = "btn btn-primary btn-round btn-small";
-      plus.textContent = "+";
-      plus.addEventListener("click", function () {
-        adjustStat(entity.id, key, 1);
-        renderCharContent();
-      });
-
-      var label = document.createElement("span");
-      label.className = "stat-name";
-      label.textContent = STAT_LABEL[key];
-
-      var value = document.createElement("span");
-      value.className = "stat-num";
-      value.textContent = entityState.stats[key];
-
-      row.appendChild(label);
-      row.appendChild(minus);
-      row.appendChild(value);
-      row.appendChild(plus);
-      grid.appendChild(row);
+      var b = computeStatBreakdown(entity.id, entityState, key);
+      grid.appendChild(buildBreakdownRow(STAT_LABEL[key], {
+        key: entity.id + ":" + key,
+        total: b.total,
+        sources: b.sources,
+        onMinus: function () { adjustStat(entity.id, key, -1); renderCharContent(); },
+        onPlus: function () { adjustStat(entity.id, key, 1); renderCharContent(); }
+      }));
     });
+
+    var armor = computeArmorBreakdown(entity.id, entityState);
+    grid.appendChild(buildBreakdownRow("Armor", {
+      key: entity.id + ":armor",
+      total: armor.total,
+      sources: armor.sources
+    }));
+
+    var weaponDmg = computeWeaponDamage(entity.id, entityState);
+    if (weaponDmg) {
+      grid.appendChild(buildBreakdownRow("Weapon Damage", {
+        key: entity.id + ":weapondmg",
+        total: weaponDmg.total,
+        sources: weaponDmg.sources
+      }));
+    }
+
     wrap.appendChild(grid);
     return wrap;
+  }
+
+  function renderEquipment(entity, entityState) {
+    var slots = getEquipmentSlots(entity.id);
+    if (!slots.length) return null;
+
+    var wrap = document.createElement("div");
+    wrap.className = "equip-card card";
+    var title = document.createElement("div");
+    title.className = "stats-title";
+    title.textContent = "Equipment";
+    wrap.appendChild(title);
+
+    var grid = document.createElement("div");
+    grid.className = "equip-grid";
+
+    slots.forEach(function (slot) {
+      var row = document.createElement("div");
+      row.className = "equip-row";
+
+      var label = document.createElement("label");
+      label.className = "equip-label";
+      label.textContent = slot.label;
+      row.appendChild(label);
+
+      var select = document.createElement("select");
+      select.className = "equip-select";
+      var noneOpt = document.createElement("option");
+      noneOpt.value = "";
+      noneOpt.textContent = "— None —";
+      select.appendChild(noneOpt);
+
+      slot.items.forEach(function (item, i) {
+        var opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = item.name;
+        select.appendChild(opt);
+      });
+
+      var currentIdx = entityState.equipment ? entityState.equipment[slot.slotId] : null;
+      select.value = (currentIdx === null || currentIdx === undefined) ? "" : currentIdx;
+
+      select.addEventListener("change", function () {
+        var v = select.value === "" ? null : Number(select.value);
+        equipItem(entity.id, slot.slotId, v);
+        renderCharContent();
+      });
+      row.appendChild(select);
+
+      var item = getEquippedItem(entityState, entity.id, slot.slotId);
+      var summary = document.createElement("div");
+      summary.className = "equip-summary";
+      summary.textContent = item ? summarizeItem(item) : "";
+      row.appendChild(summary);
+
+      grid.appendChild(row);
+    });
+
+    wrap.appendChild(grid);
+    return wrap;
+  }
+
+  function summarizeItem(item) {
+    var parts = [];
+    if (item.armor) parts.push("Armor " + item.armor);
+    if (typeof item.baseDamage === "number") {
+      parts.push("Dmg " + item.baseDamage + (item.damagePerLevel ? " (+" + item.damagePerLevel + "/lvl)" : ""));
+    }
+    STAT_KEYS.forEach(function (k) {
+      if (item[k]) parts.push(STAT_LABEL[k] + " " + (item[k] > 0 ? "+" : "") + item[k]);
+    });
+    return parts.join(", ");
   }
 
   function renderCharContent() {
@@ -527,6 +739,8 @@
 
     if (isCharacter) {
       charContentEl.appendChild(renderStats(entity, entityState));
+      var equipCard = renderEquipment(entity, entityState);
+      if (equipCard) charContentEl.appendChild(equipCard);
     }
 
     var legend = document.createElement("div");
