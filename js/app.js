@@ -192,7 +192,7 @@
     var total = base;
     var bonus = entityState.levelBonus.allocated[statKey];
     if (bonus) {
-      sources.push({ label: "Level-up Bonus", value: bonus });
+      sources.push({ label: "Level-up", value: bonus });
       total += bonus;
     }
     getEquipmentSlots(charId).forEach(function (slot) {
