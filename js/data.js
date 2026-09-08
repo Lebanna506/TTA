@@ -1,9 +1,17 @@
-// Auto-generated from the source spreadsheet. Spent points start at 0 for a fresh playthrough.
+// Auto-generated from the source spreadsheet plus the row/tree spec. Spent points start at 0 (or the character's starting-level baseline) for a fresh playthrough.
 const TTA_DATA = {
   "characters": [
     {
       "id": "berethor",
       "name": "Berethor",
+      "startLevel": 1,
+      "stats": {
+        "strength": 12,
+        "spirit": 11,
+        "constitution": 10,
+        "speed": 11,
+        "dexterity": 12
+      },
       "trees": [
         {
           "id": "swordcraft",
@@ -65,6 +73,34 @@ const TTA_DATA = {
               "required": 100,
               "tier": "very_slow"
             }
+          ],
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ],
+            [
+              6,
+              7
+            ],
+            [
+              8,
+              9
+            ],
+            [
+              10
+            ]
+          ],
+          "startUnlocked": [
+            0
           ]
         },
         {
@@ -142,6 +178,39 @@ const TTA_DATA = {
               "required": 95,
               "tier": "extremely_slow"
             }
+          ],
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ],
+            [
+              6,
+              7
+            ],
+            [
+              8,
+              9
+            ],
+            [
+              10,
+              11
+            ],
+            [
+              12,
+              13
+            ]
+          ],
+          "startUnlocked": [
+            0
           ]
         },
         {
@@ -199,13 +268,44 @@ const TTA_DATA = {
               "required": 5,
               "tier": "normal"
             }
-          ]
+          ],
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ],
+            [
+              6,
+              7
+            ],
+            [
+              8,
+              9
+            ]
+          ],
+          "startUnlocked": []
         }
       ]
     },
     {
       "id": "idrial",
       "name": "Idrial",
+      "startLevel": 1,
+      "stats": {
+        "strength": 9,
+        "spirit": 13,
+        "constitution": 9,
+        "speed": 12,
+        "dexterity": 12
+      },
       "trees": [
         {
           "id": "swordcraft",
@@ -252,6 +352,29 @@ const TTA_DATA = {
               "required": 75,
               "tier": "normal"
             }
+          ],
+          "rows": [
+            [
+              0
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              5,
+              6
+            ],
+            [
+              7
+            ]
+          ],
+          "startUnlocked": [
+            0
           ]
         },
         {
@@ -324,6 +447,39 @@ const TTA_DATA = {
               "required": 100,
               "tier": "extremely_slow"
             }
+          ],
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              2
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              5,
+              6
+            ],
+            [
+              7,
+              8
+            ],
+            [
+              9,
+              10
+            ],
+            [
+              11,
+              12
+            ]
+          ],
+          "startUnlocked": [
+            0,
+            1
           ]
         },
         {
@@ -381,13 +537,44 @@ const TTA_DATA = {
               "required": 5,
               "tier": "normal"
             }
-          ]
+          ],
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ],
+            [
+              6,
+              7
+            ],
+            [
+              8,
+              9
+            ]
+          ],
+          "startUnlocked": []
         }
       ]
     },
     {
       "id": "elegost",
       "name": "Elegost",
+      "startLevel": 5,
+      "stats": {
+        "strength": 16,
+        "spirit": 15,
+        "constitution": 15,
+        "speed": 14,
+        "dexterity": 17
+      },
       "trees": [
         {
           "id": "bow-craft",
@@ -434,6 +621,29 @@ const TTA_DATA = {
               "required": 100,
               "tier": "extremely_slow"
             }
+          ],
+          "rows": [
+            [
+              0
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              5,
+              6
+            ],
+            [
+              7
+            ]
+          ],
+          "startUnlocked": [
+            0
           ]
         },
         {
@@ -506,6 +716,38 @@ const TTA_DATA = {
               "required": 80,
               "tier": "very_slow"
             }
+          ],
+          "rows": [
+            [
+              0
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              5,
+              6
+            ],
+            [
+              7,
+              8
+            ],
+            [
+              9,
+              10
+            ],
+            [
+              11,
+              12
+            ]
+          ],
+          "startUnlocked": [
+            0
           ]
         },
         {
@@ -563,13 +805,44 @@ const TTA_DATA = {
               "required": 5,
               "tier": "normal"
             }
-          ]
+          ],
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ],
+            [
+              6,
+              7
+            ],
+            [
+              8,
+              9
+            ]
+          ],
+          "startUnlocked": []
         }
       ]
     },
     {
       "id": "hadhod",
       "name": "Hadhod",
+      "startLevel": 9,
+      "stats": {
+        "strength": 16,
+        "spirit": 15,
+        "constitution": 33,
+        "speed": 14,
+        "dexterity": 19
+      },
       "trees": [
         {
           "id": "axe-craft",
@@ -646,6 +919,42 @@ const TTA_DATA = {
               "required": 100,
               "tier": "very_slow"
             }
+          ],
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              2
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              5,
+              6
+            ],
+            [
+              7,
+              8
+            ],
+            [
+              9,
+              10
+            ],
+            [
+              11,
+              12
+            ],
+            [
+              13
+            ]
+          ],
+          "startUnlocked": [
+            0,
+            1
           ]
         },
         {
@@ -693,6 +1002,30 @@ const TTA_DATA = {
               "required": 100,
               "tier": "extremely_slow"
             }
+          ],
+          "rows": [
+            [
+              0
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              5,
+              6
+            ],
+            [
+              7
+            ]
+          ],
+          "startUnlocked": [
+            0,
+            1
           ]
         },
         {
@@ -750,13 +1083,44 @@ const TTA_DATA = {
               "required": 5,
               "tier": "extremely_slow"
             }
-          ]
+          ],
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ],
+            [
+              6,
+              7
+            ],
+            [
+              8,
+              9
+            ]
+          ],
+          "startUnlocked": []
         }
       ]
     },
     {
       "id": "morwen",
       "name": "Morwen",
+      "startLevel": 35,
+      "stats": {
+        "strength": 36,
+        "spirit": 31,
+        "constitution": 40,
+        "speed": 56,
+        "dexterity": 86
+      },
       "trees": [
         {
           "id": "dual-axe-craft",
@@ -833,6 +1197,42 @@ const TTA_DATA = {
               "required": 95,
               "tier": "very_slow"
             }
+          ],
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ],
+            [
+              6,
+              7
+            ],
+            [
+              8,
+              9
+            ],
+            [
+              10,
+              11
+            ],
+            [
+              12,
+              13
+            ]
+          ],
+          "startUnlocked": [
+            0,
+            1,
+            2,
+            3
           ]
         },
         {
@@ -880,6 +1280,30 @@ const TTA_DATA = {
               "required": 75,
               "tier": "fast"
             }
+          ],
+          "rows": [
+            [
+              0
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              5,
+              6
+            ],
+            [
+              7
+            ]
+          ],
+          "startUnlocked": [
+            0,
+            1
           ]
         },
         {
@@ -937,13 +1361,44 @@ const TTA_DATA = {
               "required": 5,
               "tier": "very_slow"
             }
-          ]
+          ],
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ],
+            [
+              6,
+              7
+            ],
+            [
+              8,
+              9
+            ]
+          ],
+          "startUnlocked": []
         }
       ]
     },
     {
-      "id": "eoden",
-      "name": "Eoden",
+      "id": "eaoden",
+      "name": "Eaoden",
+      "startLevel": 50,
+      "stats": {
+        "strength": 71,
+        "spirit": 71,
+        "constitution": 56,
+        "speed": 47,
+        "dexterity": 51
+      },
       "trees": [
         {
           "id": "spear-craft",
@@ -985,6 +1440,28 @@ const TTA_DATA = {
               "required": 60,
               "tier": "very_slow"
             }
+          ],
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ],
+            [
+              6
+            ]
+          ],
+          "startUnlocked": [
+            0,
+            1,
+            2
           ]
         },
         {
@@ -1062,6 +1539,42 @@ const TTA_DATA = {
               "required": 95,
               "tier": "normal"
             }
+          ],
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ],
+            [
+              6,
+              7
+            ],
+            [
+              8,
+              9
+            ],
+            [
+              10,
+              11
+            ],
+            [
+              12,
+              13
+            ]
+          ],
+          "startUnlocked": [
+            0,
+            1,
+            2,
+            3
           ]
         },
         {
@@ -1119,7 +1632,30 @@ const TTA_DATA = {
               "required": 40,
               "tier": "normal"
             }
-          ]
+          ],
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ],
+            [
+              6,
+              7
+            ],
+            [
+              8,
+              9
+            ]
+          ],
+          "startUnlocked": []
         }
       ]
     }
@@ -1173,7 +1709,34 @@ const TTA_DATA = {
             "required": 50,
             "tier": "normal"
           }
-        ]
+        ],
+        "rows": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ],
+          [
+            7
+          ]
+        ],
+        "startUnlocked": []
       },
       {
         "id": "shadowcraft",
@@ -1220,7 +1783,34 @@ const TTA_DATA = {
             "required": 50,
             "tier": "normal"
           }
-        ]
+        ],
+        "rows": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ],
+          [
+            7
+          ]
+        ],
+        "startUnlocked": []
       },
       {
         "id": "craft-item",
@@ -1297,7 +1887,52 @@ const TTA_DATA = {
             "required": 180,
             "tier": "normal"
           }
-        ]
+        ],
+        "rows": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ],
+          [
+            7
+          ],
+          [
+            8
+          ],
+          [
+            9
+          ],
+          [
+            10
+          ],
+          [
+            11
+          ],
+          [
+            12
+          ],
+          [
+            13
+          ]
+        ],
+        "startUnlocked": []
       }
     ]
   }

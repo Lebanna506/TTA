@@ -31,18 +31,35 @@ iPad stays on the iPad.
 - Pick a character (or Crafting) at the top.
 - Each character has 2 active skill trees and 1 passive tree; Crafting has
   3 active trees, shared by everyone.
+- Skills are laid out as a tree of rows (1 or 2 skills per row). A row
+  unlocks once at least one skill in the row above it is fully learned. A
+  row with a single "capstone" skill at the very end of a tree needs every
+  other skill in that tree learned first.
 - Tap **Use Skill (+1)** on an active tree each time that character uses a
   skill from that tree in-game — the point goes to whichever skill is
   currently "in progress". Once it's fully unlocked, progress automatically
-  moves to the next locked skill in the list.
-- Tap any locked skill in the list to redirect future points to it instead.
+  moves to the next available locked skill.
+- Tap any highlighted (available) skill in the tree to redirect future
+  points to it instead.
 - Passive skills gain a point automatically whenever you tap **+** on the
-  character's Level counter.
+  character's Level counter. Characters that don't start at level 1 (per
+  the game's own starting kits) begin with the matching passive skills
+  already progressed.
+- Each character has 5 base stats (Strength, Spirit, Constitution, Speed,
+  Dexterity) shown with their starting values — adjust with the **-** / **+**
+  buttons as they change in-game.
 - **Undo** reverses the most recent point spent in that tree (for the rare
-  case a character dies and skill points roll back).
+  case a character dies and skill points roll back). It only undoes points
+  spent during play — a character's starting kit isn't affected.
 - Skill names are colour-coded to match the in-game speed tiers: white/grey
   = normal, green = fast, and three shades of red = slow, very slow, and
   extremely slow.
+
+## Party tab
+
+Pick up to 3 characters (in the game's default order) to pull into a combat
+view showing just their 2 active skills, each with a big **+1** button, for
+quick logging mid-fight without digging through the full Skills tab.
 
 ## Boss Fight tab
 

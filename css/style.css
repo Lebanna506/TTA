@@ -233,43 +233,69 @@ html, body {
 }
 .cs-actions .btn { flex: 1; }
 
-.skill-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  max-height: 280px;
-  overflow-y: auto;
+.tree-rows {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
 }
-.skill-row {
+.tree-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  padding-top: 14px;
+}
+.tree-row:first-child { padding-top: 0; }
+.tree-row:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 14px;
+  background: var(--border);
+}
+.tree-node {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 220px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 4px;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  font-size: 0.85rem;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-panel-2);
+  font-size: 0.8rem;
 }
-.skill-row:last-child { border-bottom: none; }
-.skill-row .sk-dot {
+.tree-node .sk-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   flex: 0 0 auto;
 }
-.skill-row .sk-name {
+.tree-node .sk-name {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.skill-row .sk-cost {
+.tree-node .sk-cost {
   color: var(--text-dim);
   font-variant-numeric: tabular-nums;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
+  flex: 0 0 auto;
 }
-.skill-row.unlocked .sk-name { color: var(--tier-fast); }
-.skill-row.current { background: rgba(201,162,39,0.12); border-radius: 6px; }
-.skill-row.locked .sk-name { color: var(--text-dim); }
+.tree-node.state-unlocked { border-color: var(--tier-fast); }
+.tree-node.state-unlocked .sk-name { color: var(--tier-fast); }
+.tree-node.state-current { border-color: var(--accent); background: rgba(201,162,39,0.14); }
+.tree-node.state-available { cursor: pointer; }
+.tree-node.state-available:hover { border-color: var(--accent-dim); }
+.tree-node.state-locked { opacity: 0.4; }
+.tree-node.state-locked .sk-name { color: var(--text-dim); }
 
 .tier-normal { background: var(--tier-normal); }
 .tier-slow { background: var(--tier-slow); }
@@ -378,6 +404,78 @@ html, body {
   font-size: 0.85rem;
   text-align: center;
   padding: 12px 0;
+}
+
+/* Stats */
+.stats-card .stats-title {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-panel-2);
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+.stat-row .stat-name {
+  flex: 1;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.stat-row .stat-num {
+  font-weight: 700;
+  min-width: 2em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.btn-small {
+  width: 26px;
+  height: 26px;
+  font-size: 0.9rem;
+}
+
+/* Party */
+.party-hint {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin: 4px 2px 8px 2px;
+}
+.party-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+.party-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 1rem;
+}
+.party-skill-box {
+  background: var(--bg-panel-2);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.party-skill-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.party-tree-name {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+}
+.party-skill-box .cs-name {
+  font-weight: 700;
+  margin-bottom: 6px;
 }
 
 @media (min-width: 700px) {
