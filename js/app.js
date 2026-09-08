@@ -548,7 +548,7 @@
     curBox.innerHTML =
       '<div class="cs-top">' +
         '<span class="cs-name">' + (maxed ? "Maxed &mdash; " + curSkill.name : curSkill.name) + '</span>' +
-        '<span class="cs-progress-text">' + curSpent + ' / ' + curSkill.required + '</span>' +
+        '<span class="cs-progress-text">' + curSpent + ' / ' + curSkill.required + ' (' + pct(curPct) + ')</span>' +
       '</div>' +
       '<div class="progress-bar"><div class="progress-bar-fill" style="width:' + pct(curPct) + '"></div></div>';
 
@@ -969,7 +969,7 @@
         box.innerHTML =
           '<div class="party-skill-top">' +
             '<span class="party-tree-name">' + treeDef.name + '</span>' +
-            '<span class="cs-progress-text">' + curSpent + '/' + curSkill.required + '</span>' +
+            '<span class="cs-progress-text">' + curSpent + '/' + curSkill.required + ' (' + pct(curPct) + ')</span>' +
           '</div>' +
           '<div class="cs-name">' + (maxed ? "Maxed &mdash; " + curSkill.name : curSkill.name) + '</div>' +
           '<div class="progress-bar"><div class="progress-bar-fill" style="width:' + pct(curPct) + '"></div></div>';
