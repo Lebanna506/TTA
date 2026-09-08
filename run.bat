@@ -23,6 +23,10 @@ if not exist "%CD%\package.json" (
 where git >nul 2>nul
 if %errorlevel%==0 (
     if exist "%CD%\.git" (
+        rem Stops git's auto-gc from pruning loose-object folders after pull,
+        rem which is what triggers the "Deletion of directory ... failed"
+        rem prompt when antivirus briefly locks a file mid-delete.
+        git config gc.auto 0 >nul 2>nul
         echo Pulling latest changes...
         git pull
         echo.
