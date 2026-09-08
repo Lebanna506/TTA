@@ -421,48 +421,20 @@ html, body {
 .stats-card .stats-title {
   font-weight: 700;
   margin-bottom: 10px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 10px;
 }
-.levelbonus-bar {
-  background: var(--bg-panel-2);
-  border: 1px solid var(--accent-dim);
-  border-radius: 8px;
-  padding: 8px 10px;
-  margin-bottom: 10px;
-}
-.levelbonus-label {
+.levelup-points {
+  font-weight: 400;
   font-size: 0.8rem;
   color: var(--text-dim);
-  display: block;
-  margin-bottom: 6px;
 }
-.levelbonus-label strong {
+.levelup-points strong {
   color: var(--accent);
-  font-size: 0.95rem;
-}
-.levelbonus-alloc {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.levelbonus-chip {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--bg-panel);
-  border-radius: 999px;
-  padding: 2px 4px;
-}
-.levelbonus-chip .btn-round {
-  width: 22px;
-  height: 22px;
-  font-size: 0.8rem;
-}
-.levelbonus-name {
-  font-size: 0.72rem;
-  font-weight: 600;
-  min-width: 3.2em;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
 }
 .stats-grid {
   display: flex;
@@ -472,7 +444,7 @@ html, body {
 }
 .stat-block {
   flex: 1 1 0;
-  min-width: 88px;
+  min-width: 132px;
   background: var(--bg-panel-2);
   border-radius: 8px;
   overflow: hidden;
@@ -482,6 +454,12 @@ html, body {
   align-items: center;
   gap: 4px;
   padding: 6px 8px;
+}
+.stat-row .btn-round {
+  width: 24px;
+  height: 24px;
+  font-size: 0.85rem;
+  flex: 0 0 auto;
 }
 .stat-toggle {
   flex: 1;
@@ -535,45 +513,66 @@ html, body {
 }
 
 /* Equipment */
+.equip-card {
+  margin-top: 12px;
+}
 .equip-card .stats-title {
   font-weight: 700;
   margin-bottom: 10px;
 }
-.equip-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.equip-row {
+.equip-grid,
+.elfstone-grid {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 10px;
+  justify-content: center;
+  gap: 10px;
+}
+.equip-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   background: var(--bg-panel-2);
   border-radius: 8px;
   padding: 8px 10px;
 }
+.equip-grid > .equip-cell {
+  flex: 0 0 calc(33.333% - 7px);
+  max-width: calc(33.333% - 7px);
+}
+.elfstone-grid > .equip-cell {
+  flex: 0 0 calc(25% - 8px);
+  max-width: calc(25% - 8px);
+}
 .equip-label {
-  flex: 0 0 auto;
-  min-width: 76px;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   color: var(--text-dim);
 }
 .equip-select {
-  flex: 0 1 auto;
-  width: auto;
-  max-width: 100%;
+  width: 100%;
   background: var(--bg-panel);
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 6px 8px;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
 }
 .equip-summary {
-  flex: 1 1 140px;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--accent);
+  min-height: 1em;
+}
+
+@media (max-width: 520px) {
+  .equip-grid > .equip-cell {
+    flex: 0 0 calc(50% - 5px);
+    max-width: calc(50% - 5px);
+  }
+  .elfstone-grid > .equip-cell {
+    flex: 0 0 calc(50% - 5px);
+    max-width: calc(50% - 5px);
+  }
 }
 
 /* Party */

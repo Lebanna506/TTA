@@ -611,6 +611,15 @@
     var row = document.createElement("div");
     row.className = "stat-row";
 
+    if (opts.onMinus) {
+      var minus = document.createElement("button");
+      minus.className = "btn btn-secondary btn-round";
+      minus.textContent = "-";
+      minus.disabled = !!opts.minusDisabled;
+      minus.addEventListener("click", opts.onMinus);
+      row.appendChild(minus);
+    }
+
     var main = document.createElement("button");
     main.className = "stat-toggle";
     main.type = "button";
@@ -626,6 +635,15 @@
     main.appendChild(nameEl);
     main.appendChild(valueEl);
     row.appendChild(main);
+
+    if (opts.onPlus) {
+      var plus = document.createElement("button");
+      plus.className = "btn btn-primary btn-round";
+      plus.textContent = "+";
+      plus.disabled = !!opts.plusDisabled;
+      plus.addEventListener("click", opts.onPlus);
+      row.appendChild(plus);
+    }
 
     var wrap = document.createElement("div");
     wrap.className = "stat-block";
@@ -658,71 +676,14 @@
     return wrap;
   }
 
-  var STAT_SHORT = {
-    strength: "STR",
-    spirit: "SPT",
-    constitution: "CON",
-    speed: "SPD",
-    dexterity: "DEX"
-  };
-
-  function renderLevelBonusBar(entity, entityState) {
-    var lb = entityState.levelBonus;
-    var bar = document.createElement("div");
-    bar.className = "levelbonus-bar";
-
-    var label = document.createElement("span");
-    label.className = "levelbonus-label";
-    label.innerHTML = "Level-up Points: <strong>" + lb.unspent + "</strong> unspent";
-    bar.appendChild(label);
-
-    var alloc = document.createElement("div");
-    alloc.className = "levelbonus-alloc";
-    STAT_KEYS.forEach(function (key) {
-      var chip = document.createElement("div");
-      chip.className = "levelbonus-chip";
-
-      var minus = document.createElement("button");
-      minus.className = "btn btn-secondary btn-round";
-      minus.textContent = "-";
-      minus.disabled = lb.allocated[key] <= 0;
-      minus.addEventListener("click", function () {
-        allocateStatPoint(entity.id, key, -1);
-        renderCharContent();
-      });
-
-      var name = document.createElement("span");
-      name.className = "levelbonus-name";
-      name.textContent = STAT_SHORT[key] + (lb.allocated[key] ? " (+" + lb.allocated[key] + ")" : "");
-
-      var plus = document.createElement("button");
-      plus.className = "btn btn-primary btn-round";
-      plus.textContent = "+";
-      plus.disabled = lb.unspent <= 0;
-      plus.addEventListener("click", function () {
-        allocateStatPoint(entity.id, key, 1);
-        renderCharContent();
-      });
-
-      chip.appendChild(minus);
-      chip.appendChild(name);
-      chip.appendChild(plus);
-      alloc.appendChild(chip);
-    });
-    bar.appendChild(alloc);
-
-    return bar;
-  }
-
   function renderStats(entity, entityState) {
+    var lb = entityState.levelBonus;
     var wrap = document.createElement("div");
     wrap.className = "stats-card card";
     var title = document.createElement("div");
     title.className = "stats-title";
-    title.textContent = "Stats";
+    title.innerHTML = 'Stats <span class="levelup-points">Level-up Points: <strong>' + lb.unspent + '</strong></span>';
     wrap.appendChild(title);
-
-    wrap.appendChild(renderLevelBonusBar(entity, entityState));
 
     var grid = document.createElement("div");
     grid.className = "stats-grid";
@@ -732,7 +693,11 @@
       grid.appendChild(buildBreakdownRow(STAT_LABEL[key], {
         key: entity.id + ":" + key,
         total: b.total,
-        sources: b.sources
+        sources: b.sources,
+        minusDisabled: lb.allocated[key] <= 0,
+        onMinus: function () { allocateStatPoint(entity.id, key, -1); renderCharContent(); },
+        plusDisabled: lb.unspent <= 0,
+        onPlus: function () { allocateStatPoint(entity.id, key, 1); renderCharContent(); }
       }));
     });
 
@@ -756,8 +721,52 @@
     return wrap;
   }
 
+  function buildEquipCell(label, items, currentIdx, onChange) {
+    var cell = document.createElement("div");
+    cell.className = "equip-cell";
+
+    var labelEl = document.createElement("label");
+    labelEl.className = "equip-label";
+    labelEl.textContent = label;
+    cell.appendChild(labelEl);
+
+    var select = document.createElement("select");
+    select.className = "equip-select";
+    var noneOpt = document.createElement("option");
+    noneOpt.value = "";
+    noneOpt.textContent = "— None —";
+    select.appendChild(noneOpt);
+
+    items.forEach(function (item, i) {
+      var opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = item.name;
+      select.appendChild(opt);
+    });
+
+    select.value = (currentIdx === null || currentIdx === undefined) ? "" : currentIdx;
+    select.addEventListener("change", function () {
+      var v = select.value === "" ? null : Number(select.value);
+      var applied = onChange(v);
+      if (applied === false) {
+        select.value = (currentIdx === null || currentIdx === undefined) ? "" : currentIdx;
+      } else {
+        renderCharContent();
+      }
+    });
+    cell.appendChild(select);
+
+    var equippedItem = (currentIdx === null || currentIdx === undefined) ? null : items[currentIdx];
+    var summary = document.createElement("div");
+    summary.className = "equip-summary";
+    summary.textContent = equippedItem ? summarizeItem(equippedItem) : "";
+    cell.appendChild(summary);
+
+    return cell;
+  }
+
   function renderEquipment(entity, entityState) {
-    var slots = getEquipmentSlots(entity.id);
+    var slots = getEquipmentSlots(entity.id).filter(function (s) { return !s.maxCount; });
     if (!slots.length) return null;
 
     var wrap = document.createElement("div");
@@ -770,68 +779,39 @@
     var grid = document.createElement("div");
     grid.className = "equip-grid";
 
-    function buildRow(label, items, currentIdx, onChange) {
-      var row = document.createElement("div");
-      row.className = "equip-row";
-
-      var labelEl = document.createElement("label");
-      labelEl.className = "equip-label";
-      labelEl.textContent = label;
-      row.appendChild(labelEl);
-
-      var select = document.createElement("select");
-      select.className = "equip-select";
-      var noneOpt = document.createElement("option");
-      noneOpt.value = "";
-      noneOpt.textContent = "— None —";
-      select.appendChild(noneOpt);
-
-      items.forEach(function (item, i) {
-        var opt = document.createElement("option");
-        opt.value = i;
-        opt.textContent = item.name;
-        select.appendChild(opt);
-      });
-
-      select.value = (currentIdx === null || currentIdx === undefined) ? "" : currentIdx;
-      select.addEventListener("change", function () {
-        var v = select.value === "" ? null : Number(select.value);
-        var applied = onChange(v);
-        if (applied === false) {
-          select.value = (currentIdx === null || currentIdx === undefined) ? "" : currentIdx;
-        } else {
-          renderCharContent();
-        }
-      });
-      row.appendChild(select);
-
-      var equippedItem = (currentIdx === null || currentIdx === undefined) ? null : items[currentIdx];
-      var summary = document.createElement("div");
-      summary.className = "equip-summary";
-      summary.textContent = equippedItem ? summarizeItem(equippedItem) : "";
-      row.appendChild(summary);
-
-      return row;
-    }
-
     slots.forEach(function (slot) {
-      if (slot.maxCount) {
-        var equippedStones = entityState.equipment.elfstone || [];
-        for (var i = 0; i < slot.maxCount; i++) {
-          (function (slotIndex) {
-            grid.appendChild(buildRow(slot.label + " " + (slotIndex + 1), slot.items, equippedStones[slotIndex], function (v) {
-              return equipElfstone(entity.id, slotIndex, v);
-            }));
-          })(i);
-        }
-        return;
-      }
       var currentIdx = entityState.equipment ? entityState.equipment[slot.slotId] : null;
-      grid.appendChild(buildRow(slot.label, slot.items, currentIdx, function (v) {
+      grid.appendChild(buildEquipCell(slot.label, slot.items, currentIdx, function (v) {
         equipItem(entity.id, slot.slotId, v);
         return true;
       }));
     });
+
+    wrap.appendChild(grid);
+    return wrap;
+  }
+
+  function renderElfstones(entity, entityState) {
+    var slot = getEquipmentSlots(entity.id).find(function (s) { return s.maxCount; });
+    if (!slot) return null;
+
+    var wrap = document.createElement("div");
+    wrap.className = "equip-card card";
+    var title = document.createElement("div");
+    title.className = "stats-title";
+    title.textContent = "Elfstones";
+    wrap.appendChild(title);
+
+    var grid = document.createElement("div");
+    grid.className = "elfstone-grid";
+    var equippedStones = entityState.equipment.elfstone || [];
+    for (var i = 0; i < slot.maxCount; i++) {
+      (function (slotIndex) {
+        grid.appendChild(buildEquipCell(slot.label + " " + (slotIndex + 1), slot.items, equippedStones[slotIndex], function (v) {
+          return equipElfstone(entity.id, slotIndex, v);
+        }));
+      })(i);
+    }
 
     wrap.appendChild(grid);
     return wrap;
@@ -907,14 +887,17 @@
 
     var grid = document.createElement("div");
     grid.className = "tree-grid";
-    if (isCharacter) {
-      var equipCard = renderEquipment(entity, entityState);
-      if (equipCard) grid.appendChild(equipCard);
-    }
     entity.trees.forEach(function (treeDef) {
       grid.appendChild(renderTreeCard(entity, entityState, treeDef));
     });
     charContentEl.appendChild(grid);
+
+    if (isCharacter) {
+      var equipCard = renderEquipment(entity, entityState);
+      if (equipCard) charContentEl.appendChild(equipCard);
+      var elfstoneCard = renderElfstones(entity, entityState);
+      if (elfstoneCard) charContentEl.appendChild(elfstoneCard);
+    }
   }
 
   // ---------- Rendering: Party tab ----------

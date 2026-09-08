@@ -6,13 +6,6 @@ const TTA_DATA = {
       "name": "Berethor",
       "startLevel": 1,
       "color": "#d9534f",
-      "stats": {
-        "strength": 12,
-        "spirit": 11,
-        "constitution": 10,
-        "speed": 11,
-        "dexterity": 12
-      },
       "trees": [
         {
           "id": "swordcraft",
@@ -77,7 +70,9 @@ const TTA_DATA = {
           ],
           "rows": [
             [
-              0,
+              0
+            ],
+            [
               1
             ],
             [
@@ -182,7 +177,9 @@ const TTA_DATA = {
           ],
           "rows": [
             [
-              0,
+              0
+            ],
+            [
               1
             ],
             [
@@ -272,7 +269,9 @@ const TTA_DATA = {
           ],
           "rows": [
             [
-              0,
+              0
+            ],
+            [
               1
             ],
             [
@@ -301,13 +300,6 @@ const TTA_DATA = {
       "name": "Idrial",
       "startLevel": 1,
       "color": "#4a90e2",
-      "stats": {
-        "strength": 9,
-        "spirit": 13,
-        "constitution": 9,
-        "speed": 12,
-        "dexterity": 12
-      },
       "trees": [
         {
           "id": "swordcraft",
@@ -452,7 +444,9 @@ const TTA_DATA = {
           ],
           "rows": [
             [
-              0,
+              0
+            ],
+            [
               1
             ],
             [
@@ -542,7 +536,9 @@ const TTA_DATA = {
           ],
           "rows": [
             [
-              0,
+              0
+            ],
+            [
               1
             ],
             [
@@ -571,13 +567,6 @@ const TTA_DATA = {
       "name": "Elegost",
       "startLevel": 5,
       "color": "#4caf7d",
-      "stats": {
-        "strength": 16,
-        "spirit": 15,
-        "constitution": 15,
-        "speed": 14,
-        "dexterity": 17
-      },
       "trees": [
         {
           "id": "bow-craft",
@@ -725,7 +714,9 @@ const TTA_DATA = {
               0
             ],
             [
-              1,
+              1
+            ],
+            [
               2
             ],
             [
@@ -811,7 +802,9 @@ const TTA_DATA = {
           ],
           "rows": [
             [
-              0,
+              0
+            ],
+            [
               1
             ],
             [
@@ -840,13 +833,6 @@ const TTA_DATA = {
       "name": "Hadhod",
       "startLevel": 9,
       "color": "#a9744a",
-      "stats": {
-        "strength": 16,
-        "spirit": 15,
-        "constitution": 33,
-        "speed": 14,
-        "dexterity": 19
-      },
       "trees": [
         {
           "id": "axe-craft",
@@ -926,7 +912,9 @@ const TTA_DATA = {
           ],
           "rows": [
             [
-              0,
+              0
+            ],
+            [
               1
             ],
             [
@@ -1090,7 +1078,9 @@ const TTA_DATA = {
           ],
           "rows": [
             [
-              0,
+              0
+            ],
+            [
               1
             ],
             [
@@ -1119,13 +1109,6 @@ const TTA_DATA = {
       "name": "Morwen",
       "startLevel": 35,
       "color": "#9b6bd1",
-      "stats": {
-        "strength": 36,
-        "spirit": 31,
-        "constitution": 40,
-        "speed": 56,
-        "dexterity": 86
-      },
       "trees": [
         {
           "id": "dual-axe-craft",
@@ -1205,31 +1188,35 @@ const TTA_DATA = {
           ],
           "rows": [
             [
-              0,
+              0
+            ],
+            [
               1
             ],
             [
-              2,
-              3
+              2
             ],
             [
-              4,
-              5
+              3,
+              4
             ],
             [
-              6,
-              7
+              5,
+              6
             ],
             [
-              8,
-              9
+              7,
+              8
             ],
             [
-              10,
-              11
+              9,
+              10
             ],
             [
-              12,
+              11,
+              12
+            ],
+            [
               13
             ]
           ],
@@ -1369,7 +1356,9 @@ const TTA_DATA = {
           ],
           "rows": [
             [
-              0,
+              0
+            ],
+            [
               1
             ],
             [
@@ -1398,13 +1387,6 @@ const TTA_DATA = {
       "name": "Eaoden",
       "startLevel": 50,
       "color": "#d4b83c",
-      "stats": {
-        "strength": 71,
-        "spirit": 71,
-        "constitution": 56,
-        "speed": 47,
-        "dexterity": 51
-      },
       "trees": [
         {
           "id": "spear-craft",
@@ -1449,7 +1431,9 @@ const TTA_DATA = {
           ],
           "rows": [
             [
-              0,
+              0
+            ],
+            [
               1
             ],
             [
@@ -1548,7 +1532,9 @@ const TTA_DATA = {
           ],
           "rows": [
             [
-              0,
+              0
+            ],
+            [
               1
             ],
             [
@@ -1641,7 +1627,9 @@ const TTA_DATA = {
           ],
           "rows": [
             [
-              0,
+              0
+            ],
+            [
               1
             ],
             [

@@ -52,28 +52,30 @@ iPad stays on the iPad.
   = normal, green = fast, and three shades of red = slow, very slow, and
   extremely slow.
 - The **Stats** row (Strength, Spirit, Constitution, Speed, Dexterity, plus
-  derived Armor and Weapon Damage) sits above the skill trees, all in one
-  scrollable row. The 5 base stats come straight from the character's
-  level-progression table (levels 1-99). Tap any tile to expand a breakdown
-  of exactly what's contributing to it (base value, level-up bonus, then
-  each piece of gear).
+  derived Armor and Weapon Damage) sits directly under the character header,
+  above the skill trees, all in one scrollable row. The 5 base stats come
+  straight from the character's level-progression table (levels 1-99). Tap
+  any tile to expand a breakdown of exactly what's contributing to it (base
+  value, level-up bonus, then each piece of gear).
 - Levelling up grants **Level-up Points** — 2 per level, +1 more on a level
   divisible by 5, and +1 more (or +2 past level 50) on a level divisible by
   10 (so 1→99 earns 231 total; characters who start above level 1 begin
   with a fixed banked amount instead, by design usually less than they'd
   have earned levelling there normally). Unspent points carry over if you
-  level up multiple times without spending them. Use the **Level-up
-  Points** bar above the Stats row to put them into whichever stats you
-  choose — each allocation shows as its own line in that stat's breakdown.
-- **Equipment** sits alongside the skill trees, with one dropdown per slot
-  the character actually has (not every character has every slot — e.g.
-  only Berethor and Eaoden carry a Shield). Each character starts with
-  their canonical starting kit already equipped. Equipping an item feeds
-  its bonuses straight into the Stats row above.
-- Every character has 4 **Elfstone** slots, drawn from one shared list of
-  elfstone types. The same elfstone can be equipped on multiple characters
-  (or multiple times on one) — duplicates are allowed, so keep track of
-  what you actually own yourself.
+  level up multiple times without spending them — the running total shows
+  next to the Stats heading. Spend them with the **-**/**+** buttons right
+  on each stat tile; each allocation shows as its own line in that stat's
+  breakdown.
+- The 3 skill trees sit in their own row under Stats, followed by
+  **Equipment** — one card per slot the character actually has (not every
+  character has every slot — e.g. only Berethor and Eaoden carry a Shield),
+  laid out in columns of 3 (a partial final row is centered). Each character
+  starts with their canonical starting kit already equipped, and equipping
+  an item feeds its bonuses straight into the Stats row above.
+- **Elfstones** get their own section below Equipment: a single row of 4
+  slots, drawn from one shared list of elfstone types. The same elfstone
+  can be equipped on multiple characters (or multiple times on one) —
+  duplicates are allowed, so keep track of what you actually own yourself.
 
 ## Party tab
 
