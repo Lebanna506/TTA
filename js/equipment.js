@@ -3432,7 +3432,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "of Pure Light",
+      "name": "Pure Light",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3441,7 +3441,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "of Fell Shadow",
+      "name": "Fell Shadow",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3450,7 +3450,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "of Nimble Crafting",
+      "name": "Nimble Crafting",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
