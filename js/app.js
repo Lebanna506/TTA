@@ -1024,32 +1024,45 @@
       availTitle.textContent = "Available Skills";
       availableBox.appendChild(availTitle);
 
-      var unlockedSkills = [];
-      entity.trees.forEach(function (treeDef) {
+      var branchesWrap = document.createElement("div");
+      branchesWrap.className = "party-available-branches";
+
+      entity.trees.filter(function (t) { return t.kind === "active"; }).forEach(function (treeDef) {
         var treeState = entityState.trees[treeDef.id];
-        treeDef.skills.forEach(function (skill, i) {
-          if (treeState.spent[i] >= skill.required) unlockedSkills.push(skill);
+        var unlockedSkills = treeDef.skills.filter(function (skill, i) {
+          return treeState.spent[i] >= skill.required;
         });
+
+        var branch = document.createElement("div");
+        branch.className = "party-available-branch";
+
+        var branchTitle = document.createElement("div");
+        branchTitle.className = "party-available-branch-title";
+        branchTitle.textContent = treeDef.name;
+        branch.appendChild(branchTitle);
+
+        if (unlockedSkills.length) {
+          var availList = document.createElement("div");
+          availList.className = "party-available-list";
+          unlockedSkills.forEach(function (skill) {
+            var item = document.createElement("span");
+            item.className = "party-available-skill";
+            item.title = TIER_LABEL[skill.tier] || "";
+            item.innerHTML = '<span class="sk-dot tier-' + skill.tier + '"></span><span class="sk-name">' + skill.name + '</span>';
+            availList.appendChild(item);
+          });
+          branch.appendChild(availList);
+        } else {
+          var noneMsg = document.createElement("div");
+          noneMsg.className = "cs-progress-text";
+          noneMsg.textContent = "None yet.";
+          branch.appendChild(noneMsg);
+        }
+
+        branchesWrap.appendChild(branch);
       });
 
-      if (unlockedSkills.length) {
-        var availList = document.createElement("div");
-        availList.className = "party-available-list";
-        unlockedSkills.forEach(function (skill) {
-          var item = document.createElement("span");
-          item.className = "party-available-skill";
-          item.title = TIER_LABEL[skill.tier] || "";
-          item.innerHTML = '<span class="sk-dot tier-' + skill.tier + '"></span>' + skill.name;
-          availList.appendChild(item);
-        });
-        availableBox.appendChild(availList);
-      } else {
-        var noneMsg = document.createElement("div");
-        noneMsg.className = "cs-progress-text";
-        noneMsg.textContent = "No skills unlocked yet.";
-        availableBox.appendChild(noneMsg);
-      }
-
+      availableBox.appendChild(branchesWrap);
       card.appendChild(availableBox);
 
       grid.appendChild(card);

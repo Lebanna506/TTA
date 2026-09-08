@@ -592,16 +592,41 @@ html, body {
   margin-bottom: 6px;
 }
 .party-available-box { margin-bottom: 0; }
-.party-available-list {
+.party-available-branches {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px 14px;
+  gap: 12px;
+}
+.party-available-branch {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.party-available-branch + .party-available-branch {
+  border-left: 1px solid var(--border);
+  padding-left: 12px;
+}
+.party-available-branch-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.party-available-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 8px;
 }
 .party-available-skill {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 5px;
   font-size: 0.8rem;
+  min-width: 0;
+}
+.party-available-skill .sk-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .party-available-skill .sk-dot {
   width: 8px;
