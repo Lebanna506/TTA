@@ -2,6 +2,7 @@
   "use strict";
 
   var SAVE_KEY = "tta-save-v2";
+  var MAX_LEVEL = 99;
 
   var TIER_ORDER = ["extremely_slow", "very_slow", "slow", "normal", "fast"];
   var TIER_LABEL = {
@@ -143,7 +144,9 @@
     function reconcileEntity(defEntity, savedEntity) {
       var fe = freshEntityState(defEntity);
       if (!savedEntity) return fe;
-      fe.level = typeof savedEntity.level === "number" ? savedEntity.level : fe.level;
+      if (typeof savedEntity.level === "number") {
+        fe.level = Math.min(MAX_LEVEL, Math.max(defEntity.startLevel || 1, savedEntity.level));
+      }
       if (savedEntity.stats) {
         STAT_KEYS.forEach(function (k) {
           if (typeof savedEntity.stats[k] === "number") fe.stats[k] = savedEntity.stats[k];
@@ -242,6 +245,7 @@
   function levelUp(entityId) {
     var entityDef = findEntityDef(entityId);
     var entityState = findEntityState(entityId);
+    if (entityState.level >= MAX_LEVEL) return;
     var passiveTree = entityDef.trees.find(function (t) { return t.kind === "passive"; });
     entityState.level++;
     if (passiveTree) addPoint(entityId, passiveTree.id);
@@ -251,7 +255,7 @@
   function levelDown(entityId) {
     var entityDef = findEntityDef(entityId);
     var entityState = findEntityState(entityId);
-    if (entityState.level <= 1) return;
+    if (entityState.level <= entityDef.startLevel) return;
     var passiveTree = entityDef.trees.find(function (t) { return t.kind === "passive"; });
     entityState.level--;
     if (passiveTree) undoPoint(entityId, passiveTree.id);
@@ -277,13 +281,35 @@
   var charPickerEl = document.getElementById("charPicker");
   var charContentEl = document.getElementById("charContent");
 
+  function hexToRgba(hex, alpha) {
+    var m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (!m) return null;
+    var r = parseInt(m[1], 16), g = parseInt(m[2], 16), b = parseInt(m[3], 16);
+    return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
+  }
+
+  function styleChip(btn, entity, active) {
+    btn.innerHTML = "";
+    if (entity.color) {
+      var dot = document.createElement("span");
+      dot.className = "char-dot";
+      dot.style.background = entity.color;
+      btn.appendChild(dot);
+      btn.style.borderColor = active ? entity.color : "";
+      btn.style.color = active ? entity.color : "";
+      btn.style.background = active ? hexToRgba(entity.color, 0.16) : "";
+    }
+    btn.appendChild(document.createTextNode(entity.name));
+  }
+
   function renderCharPicker() {
     charPickerEl.innerHTML = "";
     var entries = TTA_DATA.characters.concat([TTA_DATA.crafting]);
     entries.forEach(function (entity) {
+      var active = state.selectedCharId === entity.id;
       var btn = document.createElement("button");
-      btn.className = "char-chip" + (state.selectedCharId === entity.id ? " active" : "");
-      btn.textContent = entity.name;
+      btn.className = "char-chip" + (active ? " active" : "");
+      styleChip(btn, entity, active);
       btn.addEventListener("click", function () {
         state.selectedCharId = entity.id;
         save();
@@ -459,8 +485,12 @@
 
     var header = document.createElement("div");
     header.className = "char-header card";
+    if (entity.color) {
+      header.style.borderLeft = "4px solid " + entity.color;
+    }
     var h2 = document.createElement("h2");
     h2.textContent = entity.name;
+    if (entity.color) h2.style.color = entity.color;
     header.appendChild(h2);
 
     var isCharacter = entity.id !== TTA_DATA.crafting.id;
@@ -473,7 +503,7 @@
       var minusBtn = document.createElement("button");
       minusBtn.className = "btn btn-secondary btn-round";
       minusBtn.textContent = "-";
-      minusBtn.disabled = entityState.level <= 1;
+      minusBtn.disabled = entityState.level <= entity.startLevel;
       minusBtn.addEventListener("click", function () {
         levelDown(entity.id);
         renderCharContent();
@@ -482,6 +512,7 @@
       var plusBtn = document.createElement("button");
       plusBtn.className = "btn btn-primary btn-round";
       plusBtn.textContent = "+";
+      plusBtn.disabled = entityState.level >= MAX_LEVEL;
       plusBtn.addEventListener("click", function () {
         levelUp(entity.id);
         renderCharContent();
@@ -522,7 +553,7 @@
       var selected = state.party.indexOf(c.id) !== -1;
       var btn = document.createElement("button");
       btn.className = "char-chip" + (selected ? " active" : "");
-      btn.textContent = c.name;
+      styleChip(btn, c, selected);
       if (!selected && state.party.length >= 3) btn.disabled = true;
       btn.addEventListener("click", function () {
         if (selected) {
@@ -560,9 +591,11 @@
       var entityState = findEntityState(id);
       var card = document.createElement("div");
       card.className = "card party-card";
+      if (entity.color) card.style.borderLeft = "4px solid " + entity.color;
 
       var h3 = document.createElement("h3");
       h3.textContent = entity.name + " (Lv " + entityState.level + ")";
+      if (entity.color) h3.style.color = entity.color;
       card.appendChild(h3);
 
       entity.trees.filter(function (t) { return t.kind === "active"; }).forEach(function (treeDef) {

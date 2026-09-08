@@ -5,6 +5,7 @@ const TTA_DATA = {
       "id": "berethor",
       "name": "Berethor",
       "startLevel": 1,
+      "color": "#d9534f",
       "stats": {
         "strength": 12,
         "spirit": 11,
@@ -299,6 +300,7 @@ const TTA_DATA = {
       "id": "idrial",
       "name": "Idrial",
       "startLevel": 1,
+      "color": "#4a90e2",
       "stats": {
         "strength": 9,
         "spirit": 13,
@@ -568,6 +570,7 @@ const TTA_DATA = {
       "id": "elegost",
       "name": "Elegost",
       "startLevel": 5,
+      "color": "#4caf7d",
       "stats": {
         "strength": 16,
         "spirit": 15,
@@ -836,6 +839,7 @@ const TTA_DATA = {
       "id": "hadhod",
       "name": "Hadhod",
       "startLevel": 9,
+      "color": "#a9744a",
       "stats": {
         "strength": 16,
         "spirit": 15,
@@ -1114,6 +1118,7 @@ const TTA_DATA = {
       "id": "morwen",
       "name": "Morwen",
       "startLevel": 35,
+      "color": "#9b6bd1",
       "stats": {
         "strength": 36,
         "spirit": 31,
@@ -1392,6 +1397,7 @@ const TTA_DATA = {
       "id": "eaoden",
       "name": "Eaoden",
       "startLevel": 50,
+      "color": "#d4b83c",
       "stats": {
         "strength": 71,
         "spirit": 71,
