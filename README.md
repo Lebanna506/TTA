@@ -92,3 +92,12 @@ quick logging mid-fight without digging through the full Skills tab.
   the log to start fresh.
 
 This is a fresh-playthrough starting point — all skill points start at 0.
+
+## Backing up your save
+
+**Export Save** / **Import Save** in the top-right of the header let you
+download your entire save (every character's skills, stats, equipment, and
+the boss fight log) as a single JSON file, and load it back in later.
+Useful as a manual backup, or for moving your progress to a different
+browser or device — importing asks for confirmation since it replaces
+whatever is currently saved.

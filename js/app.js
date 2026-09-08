@@ -1137,6 +1137,62 @@
     });
   });
 
+  // ---------- Save export / import ----------
+
+  var exportSaveBtn = document.getElementById("exportSaveBtn");
+  var importSaveBtn = document.getElementById("importSaveBtn");
+  var importSaveInput = document.getElementById("importSaveInput");
+
+  function exportSave() {
+    var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    var stamp = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = "third-age-tracker-save-" + stamp + ".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function refreshAllTabs() {
+    renderCharPicker();
+    renderCharContent();
+    renderPartyPicker();
+    renderPartyContent();
+    renderBoss();
+  }
+
+  function importSaveFile(file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var parsed;
+      try {
+        parsed = JSON.parse(reader.result);
+      } catch (e) {
+        alert("That file isn't valid save data.");
+        return;
+      }
+      if (!confirm("Import this save? This replaces all current progress in this browser.")) return;
+      state = reconcileState(parsed);
+      save();
+      refreshAllTabs();
+    };
+    reader.onerror = function () {
+      alert("Couldn't read that file.");
+    };
+    reader.readAsText(file);
+  }
+
+  exportSaveBtn.addEventListener("click", exportSave);
+  importSaveBtn.addEventListener("click", function () { importSaveInput.click(); });
+  importSaveInput.addEventListener("change", function () {
+    var file = importSaveInput.files[0];
+    if (file) importSaveFile(file);
+    importSaveInput.value = "";
+  });
+
   // ---------- Init ----------
 
   renderCharPicker();
