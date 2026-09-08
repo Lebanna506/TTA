@@ -3216,7 +3216,7 @@ const TTA_EQUIPMENT = {
   },
   "elfstones": [
     {
-      "name": "Cracked Elfstone of Armor Enhancement",
+      "name": "Cracked of Armor Enhancement",
       "armor": 10,
       "strength": 0,
       "spirit": 0,
@@ -3225,7 +3225,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Cracked Elfstone of Health Enhancement",
+      "name": "Cracked of Health Enhancement",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3234,7 +3234,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Cracked Elfstone of Action Enhancement",
+      "name": "Cracked of Action Enhancement",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3243,7 +3243,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Cracked Elfstone of Water Protection",
+      "name": "Cracked of Water Protection",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3252,7 +3252,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 1
     },
     {
-      "name": "Cracked Elfstone of Fire Protection",
+      "name": "Cracked of Fire Protection",
       "armor": 0,
       "strength": 1,
       "spirit": 0,
@@ -3261,7 +3261,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Cracked Elfstone of Earth Protection",
+      "name": "Cracked of Earth Protection",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3270,7 +3270,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Cracked Elfstone of Shadow Protection",
+      "name": "Cracked of Shadow Protection",
       "armor": 0,
       "strength": 0,
       "spirit": 1,
@@ -3279,7 +3279,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Cracked Elfstone of Piercing Defense",
+      "name": "Cracked of Piercing Defense",
       "armor": 0,
       "strength": 1,
       "spirit": 0,
@@ -3288,7 +3288,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Cracked Elfstone of Slashing Defense",
+      "name": "Cracked of Slashing Defense",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3297,7 +3297,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 1
     },
     {
-      "name": "Cracked Elfstone of Blunt Defense",
+      "name": "Cracked of Blunt Defense",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3306,7 +3306,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Cracked Elfstone of Spirit Enhanvement",
+      "name": "Cracked of Spirit Enhanvement",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3315,7 +3315,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Polished Elfstone of Slashing Defense",
+      "name": "Polished of Slashing Defense",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3324,7 +3324,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 2
     },
     {
-      "name": "Polished Elfstone of Water Protection",
+      "name": "Polished of Water Protection",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3333,7 +3333,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 3
     },
     {
-      "name": "Polished Elfstone of Earth Protection",
+      "name": "Polished of Earth Protection",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3342,7 +3342,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Polished Elfstone of Shadow Protection",
+      "name": "Polished of Shadow Protection",
       "armor": 0,
       "strength": 0,
       "spirit": 3,
@@ -3351,7 +3351,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Polished Elfstone of Armor Enhancement",
+      "name": "Polished of Armor Enhancement",
       "armor": 25,
       "strength": 0,
       "spirit": 0,
@@ -3360,7 +3360,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Polished Elfstone of Action Enhancement",
+      "name": "Polished of Action Enhancement",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3369,7 +3369,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Polished Elfstone of Piercing Defense",
+      "name": "Polished of Piercing Defense",
       "armor": 0,
       "strength": 2,
       "spirit": 0,
@@ -3378,7 +3378,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 1
     },
     {
-      "name": "Polished Elfstone of Blunt Defense",
+      "name": "Polished of Blunt Defense",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3387,7 +3387,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Polished Elfstone of Spirit Enhanvement",
+      "name": "Polished of Spirit Enhanvement",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3396,7 +3396,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Ancient Elfstone of Armor Enhancement",
+      "name": "Ancient of Armor Enhancement",
       "armor": 35,
       "strength": 0,
       "spirit": 0,
@@ -3405,7 +3405,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 1
     },
     {
-      "name": "Ancient Elfstone of Action Enhancement",
+      "name": "Ancient of Action Enhancement",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3414,7 +3414,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Ancient Elfstone of Health Enhancement",
+      "name": "Ancient of Health Enhancement",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3423,7 +3423,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Ancient Elfstone of Spirit Enhanvement",
+      "name": "Ancient of Spirit Enhanvement",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3432,7 +3432,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Elfstone of Pure Light",
+      "name": "of Pure Light",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3441,7 +3441,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Elfstone of Fell Shadow",
+      "name": "of Fell Shadow",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
@@ -3450,7 +3450,7 @@ const TTA_EQUIPMENT = {
       "dexterity": 0
     },
     {
-      "name": "Elfstone of Nimble Crafting",
+      "name": "of Nimble Crafting",
       "armor": 0,
       "strength": 0,
       "spirit": 0,
