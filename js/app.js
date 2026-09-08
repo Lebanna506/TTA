@@ -1017,6 +1017,41 @@
         card.appendChild(box);
       });
 
+      var availableBox = document.createElement("div");
+      availableBox.className = "party-skill-box party-available-box";
+      var availTitle = document.createElement("div");
+      availTitle.className = "party-tree-name";
+      availTitle.textContent = "Available Skills";
+      availableBox.appendChild(availTitle);
+
+      var unlockedSkills = [];
+      entity.trees.forEach(function (treeDef) {
+        var treeState = entityState.trees[treeDef.id];
+        treeDef.skills.forEach(function (skill, i) {
+          if (treeState.spent[i] >= skill.required) unlockedSkills.push(skill);
+        });
+      });
+
+      if (unlockedSkills.length) {
+        var availList = document.createElement("div");
+        availList.className = "party-available-list";
+        unlockedSkills.forEach(function (skill) {
+          var item = document.createElement("span");
+          item.className = "party-available-skill";
+          item.title = TIER_LABEL[skill.tier] || "";
+          item.innerHTML = '<span class="sk-dot tier-' + skill.tier + '"></span>' + skill.name;
+          availList.appendChild(item);
+        });
+        availableBox.appendChild(availList);
+      } else {
+        var noneMsg = document.createElement("div");
+        noneMsg.className = "cs-progress-text";
+        noneMsg.textContent = "No skills unlocked yet.";
+        availableBox.appendChild(noneMsg);
+      }
+
+      card.appendChild(availableBox);
+
       grid.appendChild(card);
     });
 
