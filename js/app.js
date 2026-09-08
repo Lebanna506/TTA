@@ -21,6 +21,26 @@
     dexterity: "Dexterity"
   };
 
+  // Attribute points earned per level-up: 2 base, +1 more on a level
+  // divisible by 5, +1 more (or +2 past level 50) on a level divisible by
+  // 10. Level 99 counts as level 100 for these checks.
+  function pointsForLevel(level) {
+    var L = level === 99 ? 100 : level;
+    var pts = 2;
+    if (L % 5 === 0) pts += 1;
+    if (L % 10 === 0) pts += L <= 50 ? 1 : 2;
+    return pts;
+  }
+
+  // Characters starting above level 1 get a fixed banked amount instead of
+  // the full sum they'd have earned levelling there normally (by design).
+  var STARTING_BONUS_POINTS = {
+    elegost: 9,
+    hadhod: 6,
+    morwen: 15,
+    eaoden: 58
+  };
+
   // ---------- Tree / row-gating helpers ----------
 
   function findRowOf(treeDef, skillIndex) {
@@ -111,7 +131,10 @@
         }
       });
     }
-    return { level: level, trees: trees, equipment: equipment };
+    var allocated = {};
+    STAT_KEYS.forEach(function (k) { allocated[k] = 0; });
+    var levelBonus = { unspent: STARTING_BONUS_POINTS[entityDef.id] || 0, allocated: allocated };
+    return { level: level, trees: trees, equipment: equipment, levelBonus: levelBonus };
   }
 
   // ---------- Equipment ----------
@@ -146,47 +169,12 @@
     save();
   }
 
-  // Elfstones are physical, unique items: the same one can't be equipped on
-  // two characters (or twice on the same character) at once. Equipping one
-  // that's already in use elsewhere prompts to move it here instead.
-  function findElfstoneOwner(itemIndex, excludeCharId, excludeSlotIndex) {
-    for (var i = 0; i < TTA_DATA.characters.length; i++) {
-      var cid = TTA_DATA.characters[i].id;
-      var es = state.characters[cid];
-      var arr = (es.equipment && es.equipment.elfstone) || [];
-      for (var s = 0; s < arr.length; s++) {
-        if (arr[s] === itemIndex && !(cid === excludeCharId && s === excludeSlotIndex)) {
-          return { charId: cid, slotIndex: s };
-        }
-      }
-    }
-    return null;
-  }
-
+  // Elfstones can be duplicated (the player owns multiple copies), so no
+  // uniqueness is enforced across or within characters - just set the slot.
   function equipElfstone(charId, slotIndex, itemIndex) {
     var entityState = findEntityState(charId);
     if (!entityState.equipment.elfstone) entityState.equipment.elfstone = new Array(ELFSTONE_MAX).fill(null);
-    var arr = entityState.equipment.elfstone;
-
-    if (itemIndex === null) {
-      arr[slotIndex] = null;
-      save();
-      return true;
-    }
-
-    var owner = findElfstoneOwner(itemIndex, charId, slotIndex);
-    if (owner) {
-      var stoneName = TTA_EQUIPMENT.elfstones[itemIndex].name;
-      var ownerName = findEntityDef(owner.charId).name;
-      var msg = owner.charId === charId
-        ? '"' + stoneName + '" is already equipped in another of ' + ownerName + "'s Elfstone slots. Move it here?"
-        : '"' + stoneName + '" is already equipped on ' + ownerName + ". Unequip it there and equip it here?";
-      if (!confirm(msg)) return false;
-      var ownerState = findEntityState(owner.charId);
-      ownerState.equipment.elfstone[owner.slotIndex] = null;
-    }
-
-    arr[slotIndex] = itemIndex;
+    entityState.equipment.elfstone[slotIndex] = itemIndex === null ? null : itemIndex;
     save();
     return true;
   }
@@ -195,6 +183,11 @@
     var base = getBaseStats(charId, entityState.level)[statKey] || 0;
     var sources = [{ label: "Base (Lv " + entityState.level + ")", value: base }];
     var total = base;
+    var bonus = entityState.levelBonus.allocated[statKey];
+    if (bonus) {
+      sources.push({ label: "Level-up Bonus", value: bonus });
+      total += bonus;
+    }
     getEquipmentSlots(charId).forEach(function (slot) {
       if (slot.maxCount) {
         getEquippedElfstones(entityState).forEach(function (item, i) {
@@ -299,6 +292,14 @@
       if (typeof savedEntity.level === "number") {
         fe.level = Math.min(MAX_LEVEL, Math.max(defEntity.startLevel || 1, savedEntity.level));
       }
+      if (savedEntity.levelBonus) {
+        if (typeof savedEntity.levelBonus.unspent === "number") fe.levelBonus.unspent = Math.max(0, savedEntity.levelBonus.unspent);
+        if (savedEntity.levelBonus.allocated) {
+          STAT_KEYS.forEach(function (k) {
+            if (typeof savedEntity.levelBonus.allocated[k] === "number") fe.levelBonus.allocated[k] = Math.max(0, savedEntity.levelBonus.allocated[k]);
+          });
+        }
+      }
       if (savedEntity.equipment) {
         getEquipmentSlots(defEntity.id).forEach(function (slot) {
           var saved = savedEntity.equipment[slot.slotId];
@@ -330,18 +331,6 @@
       out.characters[c.id] = reconcileEntity(c, saved.characters && saved.characters[c.id]);
     });
     out.crafting = reconcileEntity(TTA_DATA.crafting, saved.crafting);
-
-    // Elfstones are unique physical items - if stale/edited save data has the
-    // same one equipped twice, keep only its first occurrence in character order.
-    var claimedStones = {};
-    TTA_DATA.characters.forEach(function (c) {
-      var arr = out.characters[c.id].equipment.elfstone || [];
-      for (var i = 0; i < arr.length; i++) {
-        if (arr[i] === null) continue;
-        if (claimedStones[arr[i]]) arr[i] = null;
-        else claimedStones[arr[i]] = true;
-      }
-    });
 
     if (!out.boss || typeof out.boss !== "object") out.boss = { maxHealth: null, hits: [] };
     if (!Array.isArray(out.boss.hits)) out.boss.hits = [];
@@ -421,6 +410,7 @@
     if (entityState.level >= MAX_LEVEL) return;
     var passiveTree = entityDef.trees.find(function (t) { return t.kind === "passive"; });
     entityState.level++;
+    entityState.levelBonus.unspent += pointsForLevel(entityState.level);
     if (passiveTree) addPoint(entityId, passiveTree.id);
     save();
   }
@@ -430,8 +420,24 @@
     var entityState = findEntityState(entityId);
     if (entityState.level <= entityDef.startLevel) return;
     var passiveTree = entityDef.trees.find(function (t) { return t.kind === "passive"; });
+    entityState.levelBonus.unspent = Math.max(0, entityState.levelBonus.unspent - pointsForLevel(entityState.level));
     entityState.level--;
     if (passiveTree) undoPoint(entityId, passiveTree.id);
+    save();
+  }
+
+  function allocateStatPoint(entityId, statKey, delta) {
+    var entityState = findEntityState(entityId);
+    var lb = entityState.levelBonus;
+    if (delta > 0) {
+      if (lb.unspent <= 0) return;
+      lb.unspent--;
+      lb.allocated[statKey]++;
+    } else {
+      if (lb.allocated[statKey] <= 0) return;
+      lb.allocated[statKey]--;
+      lb.unspent++;
+    }
     save();
   }
 
@@ -652,6 +658,62 @@
     return wrap;
   }
 
+  var STAT_SHORT = {
+    strength: "STR",
+    spirit: "SPT",
+    constitution: "CON",
+    speed: "SPD",
+    dexterity: "DEX"
+  };
+
+  function renderLevelBonusBar(entity, entityState) {
+    var lb = entityState.levelBonus;
+    var bar = document.createElement("div");
+    bar.className = "levelbonus-bar";
+
+    var label = document.createElement("span");
+    label.className = "levelbonus-label";
+    label.innerHTML = "Level-up Points: <strong>" + lb.unspent + "</strong> unspent";
+    bar.appendChild(label);
+
+    var alloc = document.createElement("div");
+    alloc.className = "levelbonus-alloc";
+    STAT_KEYS.forEach(function (key) {
+      var chip = document.createElement("div");
+      chip.className = "levelbonus-chip";
+
+      var minus = document.createElement("button");
+      minus.className = "btn btn-secondary btn-round";
+      minus.textContent = "-";
+      minus.disabled = lb.allocated[key] <= 0;
+      minus.addEventListener("click", function () {
+        allocateStatPoint(entity.id, key, -1);
+        renderCharContent();
+      });
+
+      var name = document.createElement("span");
+      name.className = "levelbonus-name";
+      name.textContent = STAT_SHORT[key] + (lb.allocated[key] ? " (+" + lb.allocated[key] + ")" : "");
+
+      var plus = document.createElement("button");
+      plus.className = "btn btn-primary btn-round";
+      plus.textContent = "+";
+      plus.disabled = lb.unspent <= 0;
+      plus.addEventListener("click", function () {
+        allocateStatPoint(entity.id, key, 1);
+        renderCharContent();
+      });
+
+      chip.appendChild(minus);
+      chip.appendChild(name);
+      chip.appendChild(plus);
+      alloc.appendChild(chip);
+    });
+    bar.appendChild(alloc);
+
+    return bar;
+  }
+
   function renderStats(entity, entityState) {
     var wrap = document.createElement("div");
     wrap.className = "stats-card card";
@@ -659,6 +721,8 @@
     title.className = "stats-title";
     title.textContent = "Stats";
     wrap.appendChild(title);
+
+    wrap.appendChild(renderLevelBonusBar(entity, entityState));
 
     var grid = document.createElement("div");
     grid.className = "stats-grid";

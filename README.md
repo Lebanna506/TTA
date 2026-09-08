@@ -54,19 +54,26 @@ iPad stays on the iPad.
 - The **Stats** row (Strength, Spirit, Constitution, Speed, Dexterity, plus
   derived Armor and Weapon Damage) sits above the skill trees, all in one
   scrollable row. The 5 base stats come straight from the character's
-  level-progression table (levels 1-99) — levelling up or down moves them
-  automatically, they're no longer manually adjustable. Tap any tile to
-  expand a breakdown of exactly what's contributing to it (base value, then
+  level-progression table (levels 1-99). Tap any tile to expand a breakdown
+  of exactly what's contributing to it (base value, level-up bonus, then
   each piece of gear).
+- Levelling up grants **Level-up Points** — 2 per level, +1 more on a level
+  divisible by 5, and +1 more (or +2 past level 50) on a level divisible by
+  10 (so 1→99 earns 231 total; characters who start above level 1 begin
+  with a fixed banked amount instead, by design usually less than they'd
+  have earned levelling there normally). Unspent points carry over if you
+  level up multiple times without spending them. Use the **Level-up
+  Points** bar above the Stats row to put them into whichever stats you
+  choose — each allocation shows as its own line in that stat's breakdown.
 - **Equipment** sits alongside the skill trees, with one dropdown per slot
   the character actually has (not every character has every slot — e.g.
   only Berethor and Eaoden carry a Shield). Each character starts with
   their canonical starting kit already equipped. Equipping an item feeds
   its bonuses straight into the Stats row above.
-- Every character has 4 **Elfstone** slots, shared from one common pool —
-  the same elfstone can't be equipped on two characters (or twice on one)
-  at once, since it's a single physical item. Trying to equip one that's
-  already in use elsewhere asks whether to move it here.
+- Every character has 4 **Elfstone** slots, drawn from one shared list of
+  elfstone types. The same elfstone can be equipped on multiple characters
+  (or multiple times on one) — duplicates are allowed, so keep track of
+  what you actually own yourself.
 
 ## Party tab
 

@@ -422,6 +422,48 @@ html, body {
   font-weight: 700;
   margin-bottom: 10px;
 }
+.levelbonus-bar {
+  background: var(--bg-panel-2);
+  border: 1px solid var(--accent-dim);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+}
+.levelbonus-label {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  display: block;
+  margin-bottom: 6px;
+}
+.levelbonus-label strong {
+  color: var(--accent);
+  font-size: 0.95rem;
+}
+.levelbonus-alloc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.levelbonus-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-panel);
+  border-radius: 999px;
+  padding: 2px 4px;
+}
+.levelbonus-chip .btn-round {
+  width: 22px;
+  height: 22px;
+  font-size: 0.8rem;
+}
+.levelbonus-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  min-width: 3.2em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
 .stats-grid {
   display: flex;
   gap: 8px;

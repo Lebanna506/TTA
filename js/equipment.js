@@ -1,7 +1,8 @@
 // Auto-generated equipment data, transcribed from the pasted item tables.
-// startingEquipment holds each character's canonical starting kit, matched to the
-// closest available item by name (some starting-kit slots don't exist for that
-// character, or have no close match, and are left unequipped).
+// startingEquipment holds each character's canonical starting kit (from the
+// authoritative per-character list), matched to the closest available item by
+// name. A handful of slots have no equivalent item in the tables above (or the
+// character has no such slot at all) and are simply left unequipped.
 const TTA_EQUIPMENT = {
   "equipment": {
     "berethor": [
@@ -3460,53 +3461,46 @@ const TTA_EQUIPMENT = {
   ],
   "startingEquipment": {
     "berethor": {
-      "weapon": 0,
-      "shield": 0,
-      "helm": 1,
-      "upper_body": 1,
-      "pauldrons": 1,
-      "bracers": 1,
-      "greaves": 1
+      "cloak": 0,
+      "pauldrons": 0,
+      "upper_body": 0,
+      "lower_body": 0,
+      "weapon": 0
     },
     "idrial": {
-      "weapon": 0,
-      "helm": 0,
       "upper_body": 0,
-      "pauldrons": 0,
-      "bracers": 0,
-      "lower_body": 0
+      "lower_body": 0,
+      "weapon": 0
     },
     "elegost": {
-      "weapon": 0,
       "cloak": 0,
       "upper_body": 0,
-      "bracers": 0,
-      "lower_body": 0
+      "lower_body": 0,
+      "weapon": 0
     },
     "hadhod": {
-      "weapon": 0,
-      "helm": 0,
       "upper_body": 0,
-      "pauldrons": 0,
-      "bracers": 0,
-      "greaves": 1
+      "lower_body": 0,
+      "weapon": 0
     },
     "morwen": {
+      "pauldrons": 0,
+      "bracers": 0,
+      "upper_body": 0,
+      "lower_body": 0,
+      "greaves": 0,
       "weapon": 0,
-      "helm": 0,
-      "upper_body": 2,
-      "pauldrons": 1,
-      "bracers": 2,
-      "greaves": 2
+      "jewelry": 0
     },
     "eaoden": {
-      "weapon": 4,
-      "shield": 0,
-      "helm": 2,
-      "upper_body": 1,
-      "pauldrons": 3,
-      "bracers": 2,
-      "greaves": 2
+      "cloak": 0,
+      "pauldrons": 0,
+      "bracers": 1,
+      "upper_body": 0,
+      "lower_body": 0,
+      "greaves": 0,
+      "weapon": 0,
+      "jewelry": 0
     }
   }
 };
