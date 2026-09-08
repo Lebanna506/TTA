@@ -20,6 +20,13 @@
     speed: "Speed",
     dexterity: "Dexterity"
   };
+  var STAT_SHORT = {
+    strength: "STR",
+    spirit: "SPT",
+    constitution: "CON",
+    speed: "SPD",
+    dexterity: "DEX"
+  };
 
   // Attribute points earned per level-up: 2 base, +1 more on a level
   // divisible by 5, +1 more (or +2 past level 50) on a level divisible by
@@ -700,7 +707,7 @@
 
     STAT_KEYS.forEach(function (key) {
       var b = computeStatBreakdown(entity.id, entityState, key);
-      grid.appendChild(buildBreakdownRow(STAT_LABEL[key], {
+      grid.appendChild(buildBreakdownRow(STAT_SHORT[key], {
         key: entity.id + ":" + key,
         total: b.total,
         sources: b.sources,
