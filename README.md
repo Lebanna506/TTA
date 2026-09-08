@@ -26,7 +26,7 @@ to open `index.html` directly in Safari (e.g. via the Files app, or by
 hosting the folder somewhere you can browse to). Progress you make on the
 iPad stays on the iPad.
 
-## Skills tab
+## Hero tab
 
 - Pick a character (or Crafting) at the top.
 - Each character has 2 active skill trees and 1 passive tree; Crafting has
@@ -81,7 +81,7 @@ iPad stays on the iPad.
 
 Pick up to 3 characters (in the game's default order) to pull into a combat
 view showing just their 2 active skills, each with a big **+1** button, for
-quick logging mid-fight without digging through the full Skills tab.
+quick logging mid-fight without digging through the full Hero tab.
 
 ## Boss Fight tab
 
