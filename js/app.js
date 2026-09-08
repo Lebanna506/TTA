@@ -721,12 +721,6 @@
       line.innerHTML = '<span class="sb-label">' + s.label + '</span><span class="sb-value">' + sign + s.value + '</span>';
       panel.appendChild(line);
     });
-    if (opts.sources.length > 1) {
-      var totalLine = document.createElement("div");
-      totalLine.className = "sb-line sb-total";
-      totalLine.innerHTML = '<span class="sb-label">Total</span><span class="sb-value">' + opts.total + '</span>';
-      panel.appendChild(totalLine);
-    }
     wrap.appendChild(panel);
 
     main.addEventListener("click", function () {
