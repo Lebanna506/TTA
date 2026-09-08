@@ -4,13 +4,32 @@ setlocal
 cd /d "%~dp0"
 
 echo === Third Age Tracker ===
+echo Running from: %CD%
 echo.
+
+if not exist "%CD%\package.json" (
+    echo [!] Could not find package.json in this folder.
+    echo     This usually means run.bat was launched from somewhere other than
+    echo     the cloned TTA repo folder - e.g. a shortcut, or a stray copy of
+    echo     run.bat sitting outside the repo.
+    echo.
+    echo     In PowerShell, make sure you run it as:  .\run.bat
+    echo     ^(a bare "run.bat" can pick up an unrelated file on your PATH^)
+    echo.
+    pause
+    exit /b 1
+)
 
 where git >nul 2>nul
 if %errorlevel%==0 (
-    echo Pulling latest changes...
-    git pull
-    echo.
+    if exist "%CD%\.git" (
+        echo Pulling latest changes...
+        git pull
+        echo.
+    ) else (
+        echo [!] This folder is not a git repository - skipping pull.
+        echo.
+    )
 ) else (
     echo [!] git not found on PATH - skipping pull.
     echo.
