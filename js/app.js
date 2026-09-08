@@ -83,6 +83,15 @@
     return { currentIndex: currentIndex, spent: spent, history: [] };
   }
 
+  var ELFSTONE_MAX = 4;
+
+  function getBaseStats(charId, level) {
+    var lv = TTA_LEVELS[charId];
+    if (!lv) return { strength: 0, spirit: 0, constitution: 0, speed: 0, dexterity: 0 };
+    var idx = Math.min(lv.byLevel.length - 1, Math.max(0, level - lv.startLevel));
+    return lv.byLevel[idx];
+  }
+
   function freshEntityState(entityDef) {
     var trees = {};
     var level = entityDef.startLevel || 1;
@@ -90,15 +99,19 @@
       var simPoints = t.kind === "passive" ? Math.max(0, level - 1) : 0;
       trees[t.id] = freshTreeState(t, simPoints);
     });
-    var stats = {};
-    STAT_KEYS.forEach(function (k) {
-      stats[k] = entityDef.stats ? entityDef.stats[k] : 0;
-    });
     var equipment = {};
     getEquipmentSlots(entityDef.id).forEach(function (slot) {
-      equipment[slot.slotId] = null;
+      equipment[slot.slotId] = slot.maxCount ? new Array(slot.maxCount).fill(null) : null;
     });
-    return { level: level, stats: stats, trees: trees, equipment: equipment };
+    var starting = TTA_EQUIPMENT.startingEquipment && TTA_EQUIPMENT.startingEquipment[entityDef.id];
+    if (starting) {
+      Object.keys(starting).forEach(function (slotId) {
+        if (equipment.hasOwnProperty(slotId) && !Array.isArray(equipment[slotId])) {
+          equipment[slotId] = starting[slotId];
+        }
+      });
+    }
+    return { level: level, trees: trees, equipment: equipment };
   }
 
   // ---------- Equipment ----------
@@ -106,7 +119,7 @@
   function getEquipmentSlots(charId) {
     var slots = (TTA_EQUIPMENT.equipment[charId] || []).slice();
     if (slots.length) {
-      slots.push({ slotId: "elfstone", label: "Elfstone", items: TTA_EQUIPMENT.elfstones });
+      slots.push({ slotId: "elfstone", label: "Elfstone", items: TTA_EQUIPMENT.elfstones, maxCount: ELFSTONE_MAX });
     }
     return slots;
   }
@@ -119,6 +132,13 @@
     return slot.items[idx];
   }
 
+  function getEquippedElfstones(entityState) {
+    var arr = (entityState.equipment && entityState.equipment.elfstone) || [];
+    return arr.map(function (idx) {
+      return (idx === null || idx === undefined) ? null : TTA_EQUIPMENT.elfstones[idx];
+    });
+  }
+
   function equipItem(charId, slotId, itemIndex) {
     var entityState = findEntityState(charId);
     if (!entityState.equipment) entityState.equipment = {};
@@ -126,11 +146,65 @@
     save();
   }
 
+  // Elfstones are physical, unique items: the same one can't be equipped on
+  // two characters (or twice on the same character) at once. Equipping one
+  // that's already in use elsewhere prompts to move it here instead.
+  function findElfstoneOwner(itemIndex, excludeCharId, excludeSlotIndex) {
+    for (var i = 0; i < TTA_DATA.characters.length; i++) {
+      var cid = TTA_DATA.characters[i].id;
+      var es = state.characters[cid];
+      var arr = (es.equipment && es.equipment.elfstone) || [];
+      for (var s = 0; s < arr.length; s++) {
+        if (arr[s] === itemIndex && !(cid === excludeCharId && s === excludeSlotIndex)) {
+          return { charId: cid, slotIndex: s };
+        }
+      }
+    }
+    return null;
+  }
+
+  function equipElfstone(charId, slotIndex, itemIndex) {
+    var entityState = findEntityState(charId);
+    if (!entityState.equipment.elfstone) entityState.equipment.elfstone = new Array(ELFSTONE_MAX).fill(null);
+    var arr = entityState.equipment.elfstone;
+
+    if (itemIndex === null) {
+      arr[slotIndex] = null;
+      save();
+      return true;
+    }
+
+    var owner = findElfstoneOwner(itemIndex, charId, slotIndex);
+    if (owner) {
+      var stoneName = TTA_EQUIPMENT.elfstones[itemIndex].name;
+      var ownerName = findEntityDef(owner.charId).name;
+      var msg = owner.charId === charId
+        ? '"' + stoneName + '" is already equipped in another of ' + ownerName + "'s Elfstone slots. Move it here?"
+        : '"' + stoneName + '" is already equipped on ' + ownerName + ". Unequip it there and equip it here?";
+      if (!confirm(msg)) return false;
+      var ownerState = findEntityState(owner.charId);
+      ownerState.equipment.elfstone[owner.slotIndex] = null;
+    }
+
+    arr[slotIndex] = itemIndex;
+    save();
+    return true;
+  }
+
   function computeStatBreakdown(charId, entityState, statKey) {
-    var base = entityState.stats[statKey] || 0;
-    var sources = [{ label: "Base", value: base }];
+    var base = getBaseStats(charId, entityState.level)[statKey] || 0;
+    var sources = [{ label: "Base (Lv " + entityState.level + ")", value: base }];
     var total = base;
     getEquipmentSlots(charId).forEach(function (slot) {
+      if (slot.maxCount) {
+        getEquippedElfstones(entityState).forEach(function (item, i) {
+          if (item && item[statKey]) {
+            sources.push({ label: slot.label + " " + (i + 1), value: item[statKey] });
+            total += item[statKey];
+          }
+        });
+        return;
+      }
       var item = getEquippedItem(entityState, charId, slot.slotId);
       if (item && item[statKey]) {
         sources.push({ label: slot.label, value: item[statKey] });
@@ -144,6 +218,15 @@
     var sources = [{ label: "Base", value: 0 }];
     var total = 0;
     getEquipmentSlots(charId).forEach(function (slot) {
+      if (slot.maxCount) {
+        getEquippedElfstones(entityState).forEach(function (item, i) {
+          if (item && item.armor) {
+            sources.push({ label: slot.label + " " + (i + 1), value: item.armor });
+            total += item.armor;
+          }
+        });
+        return;
+      }
       var item = getEquippedItem(entityState, charId, slot.slotId);
       if (item && item.armor) {
         sources.push({ label: slot.label, value: item.armor });
@@ -216,15 +299,18 @@
       if (typeof savedEntity.level === "number") {
         fe.level = Math.min(MAX_LEVEL, Math.max(defEntity.startLevel || 1, savedEntity.level));
       }
-      if (savedEntity.stats) {
-        STAT_KEYS.forEach(function (k) {
-          if (typeof savedEntity.stats[k] === "number") fe.stats[k] = savedEntity.stats[k];
-        });
-      }
       if (savedEntity.equipment) {
         getEquipmentSlots(defEntity.id).forEach(function (slot) {
-          var idx = savedEntity.equipment[slot.slotId];
-          if (typeof idx === "number" && slot.items[idx]) fe.equipment[slot.slotId] = idx;
+          var saved = savedEntity.equipment[slot.slotId];
+          if (slot.maxCount) {
+            if (!Array.isArray(saved)) return;
+            for (var i = 0; i < fe.equipment[slot.slotId].length; i++) {
+              var idx = saved[i];
+              if (typeof idx === "number" && slot.items[idx]) fe.equipment[slot.slotId][i] = idx;
+            }
+          } else if (typeof saved === "number" && slot.items[saved]) {
+            fe.equipment[slot.slotId] = saved;
+          }
         });
       }
       defEntity.trees.forEach(function (t) {
@@ -244,6 +330,18 @@
       out.characters[c.id] = reconcileEntity(c, saved.characters && saved.characters[c.id]);
     });
     out.crafting = reconcileEntity(TTA_DATA.crafting, saved.crafting);
+
+    // Elfstones are unique physical items - if stale/edited save data has the
+    // same one equipped twice, keep only its first occurrence in character order.
+    var claimedStones = {};
+    TTA_DATA.characters.forEach(function (c) {
+      var arr = out.characters[c.id].equipment.elfstone || [];
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i] === null) continue;
+        if (claimedStones[arr[i]]) arr[i] = null;
+        else claimedStones[arr[i]] = true;
+      }
+    });
 
     if (!out.boss || typeof out.boss !== "object") out.boss = { maxHealth: null, hits: [] };
     if (!Array.isArray(out.boss.hits)) out.boss.hits = [];
@@ -334,12 +432,6 @@
     var passiveTree = entityDef.trees.find(function (t) { return t.kind === "passive"; });
     entityState.level--;
     if (passiveTree) undoPoint(entityId, passiveTree.id);
-    save();
-  }
-
-  function adjustStat(entityId, statKey, delta) {
-    var entityState = findEntityState(entityId);
-    entityState.stats[statKey] = Math.max(0, (entityState.stats[statKey] || 0) + delta);
     save();
   }
 
@@ -513,14 +605,6 @@
     var row = document.createElement("div");
     row.className = "stat-row";
 
-    if (opts.onMinus) {
-      var minus = document.createElement("button");
-      minus.className = "btn btn-secondary btn-round btn-small";
-      minus.textContent = "-";
-      minus.addEventListener("click", opts.onMinus);
-      row.appendChild(minus);
-    }
-
     var main = document.createElement("button");
     main.className = "stat-toggle";
     main.type = "button";
@@ -536,14 +620,6 @@
     main.appendChild(nameEl);
     main.appendChild(valueEl);
     row.appendChild(main);
-
-    if (opts.onPlus) {
-      var plus = document.createElement("button");
-      plus.className = "btn btn-primary btn-round btn-small";
-      plus.textContent = "+";
-      plus.addEventListener("click", opts.onPlus);
-      row.appendChild(plus);
-    }
 
     var wrap = document.createElement("div");
     wrap.className = "stat-block";
@@ -592,9 +668,7 @@
       grid.appendChild(buildBreakdownRow(STAT_LABEL[key], {
         key: entity.id + ":" + key,
         total: b.total,
-        sources: b.sources,
-        onMinus: function () { adjustStat(entity.id, key, -1); renderCharContent(); },
-        onPlus: function () { adjustStat(entity.id, key, 1); renderCharContent(); }
+        sources: b.sources
       }));
     });
 
@@ -632,14 +706,14 @@
     var grid = document.createElement("div");
     grid.className = "equip-grid";
 
-    slots.forEach(function (slot) {
+    function buildRow(label, items, currentIdx, onChange) {
       var row = document.createElement("div");
       row.className = "equip-row";
 
-      var label = document.createElement("label");
-      label.className = "equip-label";
-      label.textContent = slot.label;
-      row.appendChild(label);
+      var labelEl = document.createElement("label");
+      labelEl.className = "equip-label";
+      labelEl.textContent = label;
+      row.appendChild(labelEl);
 
       var select = document.createElement("select");
       select.className = "equip-select";
@@ -648,30 +722,51 @@
       noneOpt.textContent = "— None —";
       select.appendChild(noneOpt);
 
-      slot.items.forEach(function (item, i) {
+      items.forEach(function (item, i) {
         var opt = document.createElement("option");
         opt.value = i;
         opt.textContent = item.name;
         select.appendChild(opt);
       });
 
-      var currentIdx = entityState.equipment ? entityState.equipment[slot.slotId] : null;
       select.value = (currentIdx === null || currentIdx === undefined) ? "" : currentIdx;
-
       select.addEventListener("change", function () {
         var v = select.value === "" ? null : Number(select.value);
-        equipItem(entity.id, slot.slotId, v);
-        renderCharContent();
+        var applied = onChange(v);
+        if (applied === false) {
+          select.value = (currentIdx === null || currentIdx === undefined) ? "" : currentIdx;
+        } else {
+          renderCharContent();
+        }
       });
       row.appendChild(select);
 
-      var item = getEquippedItem(entityState, entity.id, slot.slotId);
+      var equippedItem = (currentIdx === null || currentIdx === undefined) ? null : items[currentIdx];
       var summary = document.createElement("div");
       summary.className = "equip-summary";
-      summary.textContent = item ? summarizeItem(item) : "";
+      summary.textContent = equippedItem ? summarizeItem(equippedItem) : "";
       row.appendChild(summary);
 
-      grid.appendChild(row);
+      return row;
+    }
+
+    slots.forEach(function (slot) {
+      if (slot.maxCount) {
+        var equippedStones = entityState.equipment.elfstone || [];
+        for (var i = 0; i < slot.maxCount; i++) {
+          (function (slotIndex) {
+            grid.appendChild(buildRow(slot.label + " " + (slotIndex + 1), slot.items, equippedStones[slotIndex], function (v) {
+              return equipElfstone(entity.id, slotIndex, v);
+            }));
+          })(i);
+        }
+        return;
+      }
+      var currentIdx = entityState.equipment ? entityState.equipment[slot.slotId] : null;
+      grid.appendChild(buildRow(slot.label, slot.items, currentIdx, function (v) {
+        equipItem(entity.id, slot.slotId, v);
+        return true;
+      }));
     });
 
     wrap.appendChild(grid);
@@ -739,8 +834,6 @@
 
     if (isCharacter) {
       charContentEl.appendChild(renderStats(entity, entityState));
-      var equipCard = renderEquipment(entity, entityState);
-      if (equipCard) charContentEl.appendChild(equipCard);
     }
 
     var legend = document.createElement("div");
@@ -750,6 +843,10 @@
 
     var grid = document.createElement("div");
     grid.className = "tree-grid";
+    if (isCharacter) {
+      var equipCard = renderEquipment(entity, entityState);
+      if (equipCard) grid.appendChild(equipCard);
+    }
     entity.trees.forEach(function (treeDef) {
       grid.appendChild(renderTreeCard(entity, entityState, treeDef));
     });

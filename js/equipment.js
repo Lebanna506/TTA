@@ -1,4 +1,7 @@
 // Auto-generated equipment data, transcribed from the pasted item tables.
+// startingEquipment holds each character's canonical starting kit, matched to the
+// closest available item by name (some starting-kit slots don't exist for that
+// character, or have no close match, and are left unequipped).
 const TTA_EQUIPMENT = {
   "equipment": {
     "berethor": [
@@ -3454,5 +3457,56 @@ const TTA_EQUIPMENT = {
       "speed": 0,
       "dexterity": 0
     }
-  ]
+  ],
+  "startingEquipment": {
+    "berethor": {
+      "weapon": 0,
+      "shield": 0,
+      "helm": 1,
+      "upper_body": 1,
+      "pauldrons": 1,
+      "bracers": 1,
+      "greaves": 1
+    },
+    "idrial": {
+      "weapon": 0,
+      "helm": 0,
+      "upper_body": 0,
+      "pauldrons": 0,
+      "bracers": 0,
+      "lower_body": 0
+    },
+    "elegost": {
+      "weapon": 0,
+      "cloak": 0,
+      "upper_body": 0,
+      "bracers": 0,
+      "lower_body": 0
+    },
+    "hadhod": {
+      "weapon": 0,
+      "helm": 0,
+      "upper_body": 0,
+      "pauldrons": 0,
+      "bracers": 0,
+      "greaves": 1
+    },
+    "morwen": {
+      "weapon": 0,
+      "helm": 0,
+      "upper_body": 2,
+      "pauldrons": 1,
+      "bracers": 2,
+      "greaves": 2
+    },
+    "eaoden": {
+      "weapon": 4,
+      "shield": 0,
+      "helm": 2,
+      "upper_body": 1,
+      "pauldrons": 3,
+      "bracers": 2,
+      "greaves": 2
+    }
+  }
 };

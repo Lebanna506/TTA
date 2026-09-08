@@ -423,11 +423,14 @@ html, body {
   margin-bottom: 10px;
 }
 .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  display: flex;
   gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
 }
 .stat-block {
+  flex: 1 1 0;
+  min-width: 88px;
   background: var(--bg-panel-2);
   border-radius: 8px;
   overflow: hidden;
@@ -435,14 +438,15 @@ html, body {
 .stat-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   padding: 6px 8px;
 }
 .stat-toggle {
   flex: 1;
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
   background: none;
   border: none;
   color: inherit;
@@ -452,20 +456,17 @@ html, body {
   text-align: left;
 }
 .stat-row .stat-name {
-  flex: 1;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   color: var(--text-dim);
+  white-space: nowrap;
 }
 .stat-row .stat-num {
   font-weight: 700;
-  min-width: 2em;
-  text-align: center;
+  font-size: 1rem;
+  text-align: left;
   font-variant-numeric: tabular-nums;
-}
-.btn-small {
-  width: 26px;
-  height: 26px;
-  font-size: 0.9rem;
 }
 .stat-breakdown {
   border-top: 1px solid var(--border);
@@ -502,8 +503,8 @@ html, body {
   gap: 8px;
 }
 .equip-row {
-  display: grid;
-  grid-template-columns: 110px 1fr;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 4px 10px;
   background: var(--bg-panel-2);
@@ -511,21 +512,25 @@ html, body {
   padding: 8px 10px;
 }
 .equip-label {
-  font-size: 0.85rem;
+  flex: 0 0 auto;
+  min-width: 76px;
+  font-size: 0.8rem;
   color: var(--text-dim);
 }
 .equip-select {
+  flex: 0 1 auto;
+  width: auto;
+  max-width: 100%;
   background: var(--bg-panel);
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 6px 8px;
-  font-size: 0.85rem;
-  width: 100%;
+  font-size: 0.82rem;
 }
 .equip-summary {
-  grid-column: 2;
-  font-size: 0.75rem;
+  flex: 1 1 140px;
+  font-size: 0.72rem;
   color: var(--accent);
 }
 

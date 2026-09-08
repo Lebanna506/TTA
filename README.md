@@ -45,21 +45,28 @@ iPad stays on the iPad.
   character's Level counter. Characters that don't start at level 1 (per
   the game's own starting kits) begin with the matching passive skills
   already progressed.
-- Each character has 5 base stats (Strength, Spirit, Constitution, Speed,
-  Dexterity) shown with their starting values — adjust with the **-** / **+**
-  buttons as they change in-game.
 - **Undo** reverses the most recent point spent in that tree (for the rare
   case a character dies and skill points roll back). It only undoes points
   spent during play — a character's starting kit isn't affected.
 - Skill names are colour-coded to match the in-game speed tiers: white/grey
   = normal, green = fast, and three shades of red = slow, very slow, and
   extremely slow.
-- Each character has an **Equipment** section with one dropdown per slot
-  they can actually use (not every character has every slot - e.g. only
-  Berethor and Eaoden carry a Shield). Equipping an item adds its bonuses
-  into the Stats tiles above; tap any stat, Armor, or Weapon Damage to see
-  a breakdown of exactly which piece of gear (or the character's own base
-  value) contributed how much.
+- The **Stats** row (Strength, Spirit, Constitution, Speed, Dexterity, plus
+  derived Armor and Weapon Damage) sits above the skill trees, all in one
+  scrollable row. The 5 base stats come straight from the character's
+  level-progression table (levels 1-99) — levelling up or down moves them
+  automatically, they're no longer manually adjustable. Tap any tile to
+  expand a breakdown of exactly what's contributing to it (base value, then
+  each piece of gear).
+- **Equipment** sits alongside the skill trees, with one dropdown per slot
+  the character actually has (not every character has every slot — e.g.
+  only Berethor and Eaoden carry a Shield). Each character starts with
+  their canonical starting kit already equipped. Equipping an item feeds
+  its bonuses straight into the Stats row above.
+- Every character has 4 **Elfstone** slots, shared from one common pool —
+  the same elfstone can't be equipped on two characters (or twice on one)
+  at once, since it's a single physical item. Trying to equip one that's
+  already in use elsewhere asks whether to move it here.
 
 ## Party tab
 
