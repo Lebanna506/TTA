@@ -476,7 +476,7 @@
     el.style.background = hexToRgba(color, 0.1);
   }
 
-  function styleChip(btn, entity, active) {
+  function styleChip(btn, entity, active, label) {
     btn.innerHTML = "";
     if (entity.color) {
       var dot = document.createElement("span");
@@ -487,7 +487,38 @@
       btn.style.color = active ? entity.color : "";
       btn.style.background = active ? hexToRgba(entity.color, 0.16) : "";
     }
-    btn.appendChild(document.createTextNode(entity.name));
+    btn.appendChild(document.createTextNode(label || entity.name));
+  }
+
+  // Tap: select this hero, or level them up if they're already selected.
+  // Long-press: level them down. Long-press suppresses the click that follows it.
+  var LONG_PRESS_MS = 550;
+  function attachTapAndHold(el, onTap, onHold) {
+    var timer = null;
+    var held = false;
+    function start() {
+      held = false;
+      timer = setTimeout(function () {
+        held = true;
+        onHold();
+      }, LONG_PRESS_MS);
+    }
+    function cancel() {
+      if (timer) { clearTimeout(timer); timer = null; }
+    }
+    el.addEventListener("pointerdown", start);
+    el.addEventListener("pointerup", cancel);
+    el.addEventListener("pointerleave", cancel);
+    el.addEventListener("pointercancel", cancel);
+    el.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+    el.addEventListener("click", function (e) {
+      if (held) {
+        held = false;
+        e.preventDefault();
+        return;
+      }
+      onTap();
+    });
   }
 
   function renderCharPicker() {
@@ -495,15 +526,29 @@
     var entries = TTA_DATA.characters.concat([TTA_DATA.crafting]);
     entries.forEach(function (entity) {
       var active = state.selectedCharId === entity.id;
+      var isCharacter = entity.id !== TTA_DATA.crafting.id;
       var btn = document.createElement("button");
       btn.className = "char-chip" + (active ? " active" : "");
-      styleChip(btn, entity, active);
-      btn.addEventListener("click", function () {
+      var label = isCharacter ? entity.name + " - " + findEntityState(entity.id).level : entity.name;
+      styleChip(btn, entity, active, label);
+
+      attachTapAndHold(btn, function () {
+        if (active && isCharacter) {
+          levelUp(entity.id);
+        } else {
+          state.selectedCharId = entity.id;
+          save();
+        }
+        renderCharPicker();
+        renderCharContent();
+      }, function () {
+        if (!isCharacter) return;
         state.selectedCharId = entity.id;
-        save();
+        levelDown(entity.id);
         renderCharPicker();
         renderCharContent();
       });
+
       charPickerEl.appendChild(btn);
     });
   }
@@ -853,45 +898,7 @@
     var entityState = findEntityState(state.selectedCharId);
     charContentEl.innerHTML = "";
 
-    var header = document.createElement("div");
-    header.className = "char-header card";
-    applyCharColor(header, entity.color);
-    var h2 = document.createElement("h2");
-    h2.textContent = entity.name;
-    if (entity.color) h2.style.color = entity.color;
-    header.appendChild(h2);
-
     var isCharacter = entity.id !== TTA_DATA.crafting.id;
-
-    if (isCharacter) {
-      var lvlWrap = document.createElement("div");
-      lvlWrap.className = "level-control";
-      lvlWrap.innerHTML = '<span class="level-label">Level</span><span class="level-value">' + entityState.level + '</span>';
-
-      var minusBtn = document.createElement("button");
-      minusBtn.className = "btn btn-secondary btn-round";
-      minusBtn.textContent = "-";
-      minusBtn.disabled = entityState.level <= entity.startLevel;
-      minusBtn.addEventListener("click", function () {
-        levelDown(entity.id);
-        renderCharContent();
-      });
-
-      var plusBtn = document.createElement("button");
-      plusBtn.className = "btn btn-primary btn-round";
-      plusBtn.textContent = "+";
-      plusBtn.disabled = entityState.level >= MAX_LEVEL;
-      plusBtn.addEventListener("click", function () {
-        levelUp(entity.id);
-        renderCharContent();
-      });
-
-      lvlWrap.insertBefore(minusBtn, lvlWrap.firstChild);
-      lvlWrap.appendChild(plusBtn);
-      header.appendChild(lvlWrap);
-    }
-
-    charContentEl.appendChild(header);
 
     if (isCharacter) {
       charContentEl.appendChild(renderStats(entity, entityState));
@@ -1210,6 +1217,17 @@
     importSaveInput.value = "";
   });
 
+  // ---------- Sticky header height ----------
+  // The char/party pickers pin themselves just below the app header, whose
+  // height varies (the header-top row wraps on narrow screens), so measure
+  // it and keep a CSS var in sync rather than guessing a fixed offset.
+
+  var appHeaderEl = document.querySelector(".app-header");
+  function syncHeaderHeight() {
+    document.documentElement.style.setProperty("--header-h", appHeaderEl.offsetHeight + "px");
+  }
+  window.addEventListener("resize", syncHeaderHeight);
+
   // ---------- Init ----------
 
   renderCharPicker();
@@ -1217,4 +1235,5 @@
   renderPartyPicker();
   renderPartyContent();
   renderBoss();
+  syncHeaderHeight();
 })();
