@@ -1,0 +1,12 @@
+{
+  "name": "third-age-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local-only skill and boss-fight tracker for The Third Age",
+  "scripts": {
+    "start": "http-server . -c-1 -p 8080 -o"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
