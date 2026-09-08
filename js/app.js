@@ -1104,6 +1104,16 @@
         row.className = "hit-row";
         var num = hits.length - i;
         row.innerHTML = '<span class="hit-num">#' + num + '</span><span class="hit-dmg">' + hit.dmg + '</span>';
+        var repeat = document.createElement("button");
+        repeat.className = "hit-repeat";
+        repeat.textContent = "Repeat";
+        repeat.title = "Log another hit for " + hit.dmg;
+        repeat.addEventListener("click", function () {
+          state.boss.hits.push({ id: Date.now() + "-" + Math.random(), dmg: hit.dmg });
+          save();
+          renderBoss();
+        });
+        row.appendChild(repeat);
         var del = document.createElement("button");
         del.className = "hit-del";
         del.textContent = "✕";

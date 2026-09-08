@@ -388,6 +388,17 @@ html, body {
 .hit-row:last-child { border-bottom: none; }
 .hit-row .hit-num { color: var(--text-dim); font-size: 0.8rem; width: 2em; }
 .hit-row .hit-dmg { flex: 1; font-weight: 600; }
+.hit-row .hit-repeat {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 3px 8px;
+  margin-right: 6px;
+}
+.hit-row .hit-repeat:hover { color: var(--text); border-color: var(--accent-dim); }
 .hit-row .hit-del {
   background: transparent;
   border: none;
