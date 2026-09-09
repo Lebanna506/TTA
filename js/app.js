@@ -929,7 +929,7 @@
       var selected = state.party.indexOf(c.id) !== -1;
       var btn = document.createElement("button");
       btn.className = "char-chip" + (selected ? " active" : "");
-      styleChip(btn, c, selected);
+      styleChip(btn, c, selected, c.name + " - " + findEntityState(c.id).level);
       if (!selected && state.party.length >= 3) btn.disabled = true;
       btn.addEventListener("click", function () {
         if (selected) {
