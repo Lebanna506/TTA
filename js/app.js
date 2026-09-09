@@ -1228,7 +1228,7 @@
   // can go stale if another tab changed shared state (e.g. spending a skill
   // point from Party). Refresh the tab being switched into every time.
   var tabRefresh = {
-    skills: renderCharContent,
+    skills: function () { renderCharPicker(); renderCharContent(); },
     party: renderPartyContent,
     boss: renderBoss
   };
