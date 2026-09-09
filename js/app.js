@@ -945,130 +945,160 @@
     });
   }
 
+  function buildPartyCard(id) {
+    var entity = findEntityDef(id);
+    var entityState = findEntityState(id);
+    var card = document.createElement("div");
+    card.className = "card party-card";
+    applyCharColor(card, entity.color);
+
+    var headerRow = document.createElement("div");
+    headerRow.className = "party-card-header";
+
+    var h3 = document.createElement("h3");
+    h3.textContent = entity.name + " (Lv " + entityState.level + ")";
+    if (entity.color) h3.style.color = entity.color;
+    headerRow.appendChild(h3);
+
+    var levelUpBtn = document.createElement("button");
+    levelUpBtn.className = "btn btn-primary party-levelup-btn";
+    levelUpBtn.textContent = "Level Up";
+    levelUpBtn.disabled = entityState.level >= MAX_LEVEL;
+    levelUpBtn.addEventListener("click", function () {
+      levelUp(id);
+      renderPartyContent();
+    });
+    headerRow.appendChild(levelUpBtn);
+
+    card.appendChild(headerRow);
+
+    entity.trees.filter(function (t) { return t.kind === "active"; }).forEach(function (treeDef) {
+      var treeState = entityState.trees[treeDef.id];
+      var maxed = isTreeMaxed(treeState.spent, treeDef);
+      var curIdx = maxed ? treeDef.skills.length - 1 : treeState.currentIndex;
+      var curSkill = treeDef.skills[curIdx];
+      var curSpent = treeState.spent[curIdx];
+      var curPct = Math.min(1, curSpent / (curSkill.required || 1));
+
+      var box = document.createElement("div");
+      box.className = "party-skill-box";
+      box.innerHTML =
+        '<div class="party-skill-top">' +
+          '<span class="party-tree-name">' + treeDef.name + '</span>' +
+          '<span class="cs-progress-text">' + curSpent + '/' + curSkill.required + ' (' + pct(curPct) + ')</span>' +
+        '</div>' +
+        '<div class="cs-name">' + (maxed ? "Maxed &mdash; " + curSkill.name : curSkill.name) + '</div>' +
+        '<div class="progress-bar"><div class="progress-bar-fill" style="width:' + pct(curPct) + '"></div></div>';
+
+      var actions = document.createElement("div");
+      actions.className = "cs-actions";
+      var useBtn = document.createElement("button");
+      useBtn.className = "btn btn-primary";
+      useBtn.textContent = "+1";
+      useBtn.disabled = maxed;
+      useBtn.addEventListener("click", function () {
+        addPoint(id, treeDef.id);
+        renderPartyContent();
+      });
+      var undoBtn = document.createElement("button");
+      undoBtn.className = "btn btn-secondary";
+      undoBtn.textContent = "Undo";
+      undoBtn.disabled = treeState.history.length === 0;
+      undoBtn.addEventListener("click", function () {
+        undoPoint(id, treeDef.id);
+        renderPartyContent();
+      });
+      actions.appendChild(useBtn);
+      actions.appendChild(undoBtn);
+      box.appendChild(actions);
+
+      card.appendChild(box);
+    });
+
+    var availableBox = document.createElement("div");
+    availableBox.className = "party-skill-box party-available-box";
+    var availTitle = document.createElement("div");
+    availTitle.className = "party-tree-name";
+    availTitle.textContent = "Available Skills";
+    availableBox.appendChild(availTitle);
+
+    var branchesWrap = document.createElement("div");
+    branchesWrap.className = "party-available-branches";
+
+    entity.trees.filter(function (t) { return t.kind === "active"; }).forEach(function (treeDef) {
+      var treeState = entityState.trees[treeDef.id];
+      var unlockedSkills = treeDef.skills.filter(function (skill, i) {
+        return treeState.spent[i] >= skill.required;
+      });
+
+      var branch = document.createElement("div");
+      branch.className = "party-available-branch";
+
+      var branchTitle = document.createElement("div");
+      branchTitle.className = "party-available-branch-title";
+      branchTitle.textContent = treeDef.name;
+      branch.appendChild(branchTitle);
+
+      if (unlockedSkills.length) {
+        var availList = document.createElement("div");
+        availList.className = "party-available-list";
+        unlockedSkills.forEach(function (skill) {
+          var item = document.createElement("span");
+          item.className = "party-available-skill";
+          item.title = TIER_LABEL[skill.tier] || "";
+          item.innerHTML = '<span class="sk-dot tier-' + skill.tier + '"></span><span class="sk-name">' + skill.name + '</span>';
+          availList.appendChild(item);
+        });
+        branch.appendChild(availList);
+      } else {
+        var noneMsg = document.createElement("div");
+        noneMsg.className = "cs-progress-text";
+        noneMsg.textContent = "None yet.";
+        branch.appendChild(noneMsg);
+      }
+
+      branchesWrap.appendChild(branch);
+    });
+
+    availableBox.appendChild(branchesWrap);
+    card.appendChild(availableBox);
+
+    return card;
+  }
+
   function renderPartyContent() {
     partyContentEl.innerHTML = "";
-    if (!state.party.length) {
-      var empty = document.createElement("p");
-      empty.className = "empty-msg";
-      empty.textContent = "No party members selected yet.";
-      partyContentEl.appendChild(empty);
-      return;
-    }
 
     var orderedIds = TTA_DATA.characters
       .map(function (c) { return c.id; })
       .filter(function (id) { return state.party.indexOf(id) !== -1; });
+    var remainingIds = TTA_DATA.characters
+      .map(function (c) { return c.id; })
+      .filter(function (id) { return state.party.indexOf(id) === -1; });
 
-    var grid = document.createElement("div");
-    grid.className = "party-grid";
+    if (orderedIds.length) {
+      var grid = document.createElement("div");
+      grid.className = "party-grid";
+      orderedIds.forEach(function (id) { grid.appendChild(buildPartyCard(id)); });
+      partyContentEl.appendChild(grid);
+    } else {
+      var empty = document.createElement("p");
+      empty.className = "empty-msg";
+      empty.textContent = "No party members selected yet.";
+      partyContentEl.appendChild(empty);
+    }
 
-    orderedIds.forEach(function (id) {
-      var entity = findEntityDef(id);
-      var entityState = findEntityState(id);
-      var card = document.createElement("div");
-      card.className = "card party-card";
-      applyCharColor(card, entity.color);
+    if (remainingIds.length) {
+      var divider = document.createElement("div");
+      divider.className = "party-divider";
+      divider.innerHTML = "<span>Other Characters</span>";
+      partyContentEl.appendChild(divider);
 
-      var h3 = document.createElement("h3");
-      h3.textContent = entity.name + " (Lv " + entityState.level + ")";
-      if (entity.color) h3.style.color = entity.color;
-      card.appendChild(h3);
-
-      entity.trees.filter(function (t) { return t.kind === "active"; }).forEach(function (treeDef) {
-        var treeState = entityState.trees[treeDef.id];
-        var maxed = isTreeMaxed(treeState.spent, treeDef);
-        var curIdx = maxed ? treeDef.skills.length - 1 : treeState.currentIndex;
-        var curSkill = treeDef.skills[curIdx];
-        var curSpent = treeState.spent[curIdx];
-        var curPct = Math.min(1, curSpent / (curSkill.required || 1));
-
-        var box = document.createElement("div");
-        box.className = "party-skill-box";
-        box.innerHTML =
-          '<div class="party-skill-top">' +
-            '<span class="party-tree-name">' + treeDef.name + '</span>' +
-            '<span class="cs-progress-text">' + curSpent + '/' + curSkill.required + ' (' + pct(curPct) + ')</span>' +
-          '</div>' +
-          '<div class="cs-name">' + (maxed ? "Maxed &mdash; " + curSkill.name : curSkill.name) + '</div>' +
-          '<div class="progress-bar"><div class="progress-bar-fill" style="width:' + pct(curPct) + '"></div></div>';
-
-        var actions = document.createElement("div");
-        actions.className = "cs-actions";
-        var useBtn = document.createElement("button");
-        useBtn.className = "btn btn-primary";
-        useBtn.textContent = "+1";
-        useBtn.disabled = maxed;
-        useBtn.addEventListener("click", function () {
-          addPoint(id, treeDef.id);
-          renderPartyContent();
-        });
-        var undoBtn = document.createElement("button");
-        undoBtn.className = "btn btn-secondary";
-        undoBtn.textContent = "Undo";
-        undoBtn.disabled = treeState.history.length === 0;
-        undoBtn.addEventListener("click", function () {
-          undoPoint(id, treeDef.id);
-          renderPartyContent();
-        });
-        actions.appendChild(useBtn);
-        actions.appendChild(undoBtn);
-        box.appendChild(actions);
-
-        card.appendChild(box);
-      });
-
-      var availableBox = document.createElement("div");
-      availableBox.className = "party-skill-box party-available-box";
-      var availTitle = document.createElement("div");
-      availTitle.className = "party-tree-name";
-      availTitle.textContent = "Available Skills";
-      availableBox.appendChild(availTitle);
-
-      var branchesWrap = document.createElement("div");
-      branchesWrap.className = "party-available-branches";
-
-      entity.trees.filter(function (t) { return t.kind === "active"; }).forEach(function (treeDef) {
-        var treeState = entityState.trees[treeDef.id];
-        var unlockedSkills = treeDef.skills.filter(function (skill, i) {
-          return treeState.spent[i] >= skill.required;
-        });
-
-        var branch = document.createElement("div");
-        branch.className = "party-available-branch";
-
-        var branchTitle = document.createElement("div");
-        branchTitle.className = "party-available-branch-title";
-        branchTitle.textContent = treeDef.name;
-        branch.appendChild(branchTitle);
-
-        if (unlockedSkills.length) {
-          var availList = document.createElement("div");
-          availList.className = "party-available-list";
-          unlockedSkills.forEach(function (skill) {
-            var item = document.createElement("span");
-            item.className = "party-available-skill";
-            item.title = TIER_LABEL[skill.tier] || "";
-            item.innerHTML = '<span class="sk-dot tier-' + skill.tier + '"></span><span class="sk-name">' + skill.name + '</span>';
-            availList.appendChild(item);
-          });
-          branch.appendChild(availList);
-        } else {
-          var noneMsg = document.createElement("div");
-          noneMsg.className = "cs-progress-text";
-          noneMsg.textContent = "None yet.";
-          branch.appendChild(noneMsg);
-        }
-
-        branchesWrap.appendChild(branch);
-      });
-
-      availableBox.appendChild(branchesWrap);
-      card.appendChild(availableBox);
-
-      grid.appendChild(card);
-    });
-
-    partyContentEl.appendChild(grid);
+      var remGrid = document.createElement("div");
+      remGrid.className = "party-grid";
+      remainingIds.forEach(function (id) { remGrid.appendChild(buildPartyCard(id)); });
+      partyContentEl.appendChild(remGrid);
+    }
   }
 
   // ---------- Rendering: Boss Fight tab ----------
